@@ -1,0 +1,8 @@
+*.exe
+dockerfiles/
+volumes/
+
+scripts
+envs-enabled
+.env
+docker-compose.minidlna-*

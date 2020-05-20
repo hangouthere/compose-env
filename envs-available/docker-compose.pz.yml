@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+  lgsm-pzserver:
+    image: nerdfoundry/lgsm-pzserver
+    container_name: zomboid
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    ports:
+      - '8766-8767:8766-8767/udp'
+      - '16261-16278:16261-16278/udp'
+      - '27015:28016'
+    volumes:
+      # Caches home dir, including lgsm/steamcmd/etc
+      - lgsm-cache:/home/linuxgsm
+      # Caches Zomboid Server Install (settings, world) for easy backups
+      - ../volumes/project-zomboid/server-files:/home/linuxgsm/Zomboid
+      # LGSM Configuration
+      - ../volumes/project-zomboid/config-lgsm:/home/linuxgsm/lgsm/config-lgsm/pzserver
+
+  rcon:
+    container_name: rcon
+    image: itzg/rcon
+    restart: unless-stopped
+    env_file:
+      - .env/.env
+      - .env/.env-rcon
+    ports:
+      - '4326:4326'
+      - '4327:4327'
+    volumes:
+      - '../volumes/rcon:/opt/rcon-web-admin/db'
+
+volumes:
+  lgsm-cache:

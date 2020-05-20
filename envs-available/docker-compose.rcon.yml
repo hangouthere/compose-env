@@ -1,0 +1,21 @@
+version: '3.7'
+
+services:
+  rcon:
+    container_name: rcon
+    image: itzg/rcon
+    restart: unless-stopped
+    env_file:
+      - .env/.env
+      - .env/.env-rcon
+    ports:
+      - '4326:4326'
+      - '4327:4327'
+    volumes:
+      - '../volumes/rcon:/opt/rcon-web-admin/db'
+    networks:
+      - rcon_vlan
+
+networks:
+  rcon_vlan:
+    name: rcon_vlan
