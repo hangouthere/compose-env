@@ -1,0 +1,57 @@
+version: "3.5"
+
+services:
+  sync_gdrive_nerdfoundry:
+    container_name: sync_gdrive_nerdfoundry
+    image: nerdfoundry/rclonesync
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - SYNC_DESTINATION=GDrive_nerdfoundry
+    volumes:
+      - ./volumes/rclone:/config # needs to stay a directory
+      - ../GDrive_nerdfoundry:/data
+
+  sync_gdrive_thegorenas:
+    container_name: sync_gdrive_thegorenas
+    image: nerdfoundry/rclonesync
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - SYNC_DESTINATION=GDrive_thegorenas
+    volumes:
+      - ./volumes/rclone:/config # needs to stay a directory
+      - ../GDrive_thegorenas:/data
+
+  sync_gdrive_jmgorena:
+    container_name: sync_gdrive_jmgorena
+    image: nerdfoundry/rclonesync
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - SYNC_DESTINATION=GDrive_jmgorena
+    volumes:
+      - ./volumes/rclone:/config # needs to stay a directory
+      - ../GDrive_jmgorena:/data
+
+  sync_gdrive_argorena:
+    container_name: sync_gdrive_argorena
+    image: nerdfoundry/rclonesync
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - SYNC_DESTINATION=GDrive_argorena
+    volumes:
+      - ./volumes/rclone:/config # needs to stay a directory
+      - ../GDrive_argorena:/data
+
+  sync_db_jmgorena:
+    container_name: sync_db_jmgorena
+    image: nerdfoundry/rclonesync
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - SYNC_DESTINATION=Dropbox_jmgorena
+    volumes:
+      - ./volumes/rclone:/config # needs to stay a directory
+      - ../Dropbox_jmgorena:/data

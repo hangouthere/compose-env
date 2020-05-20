@@ -1,0 +1,38 @@
+trigger:
+  - platform: zone
+    entity_id: device_tracker.iphone, device_tracker.jons_iphone
+    zone: zone.casino
+    event: enter
+  - platform: zone
+    entity_id: device_tracker.iphone, device_tracker.jons_iphone
+    zone: zone.casino
+    event: leave
+  - platform: zone
+    entity_id: device_tracker.iphone, device_tracker.jons_iphone
+    zone: zone.home
+    event: enter
+  - platform: zone
+    entity_id: device_tracker.iphone, device_tracker.jons_iphone
+    zone: zone.home
+    event: leave
+  - platform: zone
+    entity_id: device_tracker.iphone, device_tracker.jons_iphone
+    zone: zone.natasha_work
+    event: enter
+  - platform: zone
+    entity_id: device_tracker.iphone, device_tracker.jons_iphone
+    zone: zone.natasha_work
+    event: leave
+  - platform: zone
+    entity_id: device_tracker.iphone, device_tracker.jons_iphone
+    zone: zone.jon_work
+    event: enter
+  - platform: zone
+    entity_id: device_tracker.iphone, device_tracker.jons_iphone
+    zone: zone.jon_work
+    event: leave
+action:
+  service: notify.notify
+  data_template:
+    message: >
+      {{trigger.to_state.attributes.friendly_name}} {{ 'arrived at ' ~ trigger.to_state.state if trigger.to_state.state else 'left '~trigger.from_state.state }}``` (Thanks to Ludeeus for the message part 🙂 - I want to send a message to the opposing phone. So, when Jon arrives at casino, Tash gets the message.

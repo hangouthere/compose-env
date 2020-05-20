@@ -1,0 +1,36 @@
+version: "3.5"
+
+services:
+  # nginx:
+  #   container_name: nfg_website
+  #   image: nginx:mainline-alpine
+  #   restart: unless-stopped
+  #   env_file: .env
+  #   ports:
+  #     - 80:80
+  #   volumes:
+  #     - ./volumes/nfg_website:/usr/share/nginx/html
+
+  letsencrypt:
+    container_name: letsencrypt
+    image: linuxserver/letsencrypt
+    restart: unless-stopped
+    env_file: .env
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - SUBDOMAINS=wildcard
+      # - STAGING=true
+
+      - URL=${URL_NFGARMY}
+      - VALIDATION=dns
+      - DNSPLUGIN=cloudflare
+      ########
+      # - URL=${URL_DUCKDNS}
+      # - VALIDATION=duckdns
+      # - DUCKDNSTOKEN=${TOKEN_DUCKDNS}
+    volumes:
+      - ./volumes/letsencrypt:/config
+    ports:
+      - 80:80
+      - 443:443

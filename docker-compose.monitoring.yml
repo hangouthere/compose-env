@@ -1,0 +1,81 @@
+# Prefix:
+# A lot of this came from here: https://towardsdatascience.com/get-system-metrics-for-5-min-with-docker-telegraf-influxdb-and-grafana-97cfd957f0ac
+# And the telegraf info from here: https://www.jacobtomlinson.co.uk/monitoring/2016/06/23/running-telegraf-inside-a-container/
+##############################################################################
+# Create base network and volumes for setup commands
+
+# docker network create monitoring
+# docker volume create grafana-volume
+# docker volume create influxdb-volume
+
+# Then set up influx with an admin and user. Feel free to change info!
+
+# docker run --rm \
+#   -e INFLUXDB_DB=telegraf -e INFLUXDB_ADMIN_ENABLED=true \
+#   -e INFLUXDB_ADMIN_USER=admin \
+#   -e INFLUXDB_ADMIN_PASSWORD=supersecretpassword \
+#   -e INFLUXDB_USER=telegraf -e INFLUXDB_USER_PASSWORD=secretpassword \
+#   -v influxdb-volume:/var/lib/influxdb \
+#   influxdb /init-influxdb.sh
+##############################################################################
+
+version: "3.5"
+
+services:
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+    volumes:
+      - grafana-volume:/var/lib/grafana
+  influxdb:
+    image: influxdb
+    container_name: influxdb
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - 8086:8086
+    volumes:
+      - influxdb-volume:/var/lib/influxdb
+  telegraf:
+    image: telegraf
+    container_name: telegraf
+    restart: unless-stopped
+    env_file: .env
+    hostname: nfgarmy
+    cap_add:
+      - SYS_PTRACE
+    environment:
+      HOST_PROC: /rootfs/proc
+      HOST_SYS: /rootfs/sys
+      HOST_ETC: /rootfs/etc
+    volumes:
+      - ./volumes/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys:/rootfs/sys:ro
+      - /proc:/rootfs/proc:ro
+      - /etc:/rootfs/etc:ro
+  #chronograf:
+  #  image: chronograf
+  #  container_name: chronograf
+  #  restart: unless-stopped
+  #  env_file: .env
+  #  ports:
+  #    - 8888:8888
+  #  volumes:
+  #    - chronograf-volume:/var/lib/chronograf
+  #  environment:
+  #    INFLUXDB_URL: http://192.168.1.55:8086
+
+volumes:
+  #chronograf-volume:
+  #  name: chronograf-volume
+  grafana-volume:
+    external: true
+  influxdb-volume:
+    external: true

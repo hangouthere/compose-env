@@ -1,0 +1,55 @@
+version: "3.5"
+
+services:
+  minecraft-bedrock:
+    container_name: minecraft-bedrock
+    image: itzg/minecraft-bedrock-server
+    restart: unless-stopped
+    env_file: .env
+    tty: true
+    stdin_open: true
+    environment:
+      EULA: "TRUE"
+      ALLOW_CHEATS: 'true'
+      GAMEMODE: creative
+      DIFFICULTY: normal
+      VIEW_DISTANCE: 24
+      PLAYER_IDLE_TIMEOUT: 10
+      SERVER_NAME: "NFGArmy Bedrock Server!"
+      MAX_PLAYERS: 40
+    ports:
+      - 19132:19132/udp
+    volumes:
+      - mc-bedrock-volume:/data
+
+  # minecraft-java:
+  #   container_name: minecraft-java
+  #   image: itzg/minecraft-server
+  #   restart: unless-stopped
+  #   env_file: .env
+  #   ports:
+  #     - "25565:25565"
+  #     - "28016:28016"
+  #   volumes:
+  #     - "mc-java-volume:/data"
+  #   environment:
+  #     EULA: "TRUE"
+  #     ENABLE_RCON: "true"
+  #     RCON_PASSWORD: "testing"
+  #     RCON_PORT: 9201
+  #   restart: always
+  ## rcon:
+  ##   image: itzg/rcon
+  ##   ports:
+  ##     - "4326:4326"
+  ##     - "4327:4327"
+  ##   volumes:
+  ##     - "rcon-volume:/opt/rcon-web-admin/db"
+
+volumes:
+  # mc-java-volume:
+  #   external: true
+  mc-bedrock-volume:
+    external: true
+  # rcon-volume:
+  #   external: true
