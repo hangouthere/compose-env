@@ -1,0 +1,19 @@
+services:
+  windows:
+    image: dockurr/windows
+    container_name: windows
+    stop_grace_period: 2m
+    environment:
+      - VERSION=win11
+      - ARGUMENTS=-device usb-host,vendorid=0x25a7,productid=0xfa07
+    devices:
+      - /dev/kvm
+      - /dev/bus/usb
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ../volumes/windows/disk:/storage
+    ports:
+      - 8006:8006
+      - 3389:3389/tcp
+      - 3389:3389/udp

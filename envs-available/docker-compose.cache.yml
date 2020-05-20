@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+  apt-cacher:
+    image: sameersbn/apt-cacher-ng
+    container_name: apt-cacher
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    ports:
+      - '3142:3142'
+    volumes:
+      # Caches apt packages in a named volume
+      - apt-cacher:/var/cache/apt-cacher-ng
+
+volumes:
+  apt-cacher:
+

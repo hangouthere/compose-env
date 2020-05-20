@@ -1,0 +1,93 @@
+version: '3.5'
+
+# TODO:  Need to do a FULL backup of all this crap :S
+# - Be sure to get site configs, extra fail2ban setup stuff (instaban and jail config, as well as iptables remote stuff i made)
+
+services:
+  mariadb:
+    container_name: mariadb
+    image: lscr.io/linuxserver/mariadb:latest
+    restart: unless-stopped
+    env_file:
+      - .env/.env
+      - .env/.env-web
+    volumes:
+      - ../volumes/mariadb:/config
+    ports:
+      - 3306:3306
+
+        #phpmyadmin:
+        #  container_name: phpmyadmin
+        #  image: phpmyadmin/phpmyadmin
+        #  env_file:
+        #    - .env/.env
+        #    - .env/.env-web
+        #  ports:
+        #    - 8080:80
+        #  external_links:
+        #    - mariadb:db
+
+  swag:
+    container_name: swag
+    image: lscr.io/linuxserver/swag:latest
+    restart: unless-stopped
+    env_file:
+      - .env/.env
+      - .env/.env-web
+    cap_add:
+      - NET_ADMIN
+    networks:
+      - default
+      - gateway_access
+    volumes:
+      - ../volumes/swag:/config
+      - /home/nfg/StoreActive/cloud-sync/GDrive_nerdfoundry/HangoutHereGFX/Overlay:/config/www/obs-overlays.home/hh
+      - /home/nfg/StoreActive/cloud-sync/GDrive_nerdfoundry/CodexHere/Web/:/config/www/obs-overlays.home/codexhere
+        # - ../volumes/minecraft/minecraft-bedrock-converted/bluemap/web:/tmp/bluemap/play
+        # - ../volumes/minecraft/minecraft-bedrock-converted/bluemap/web:/tmp/bluemap/play2
+        #- ../volumes/minecraft/minecraft-prim/bluemap/web:/tmp/bluemap/play
+    environment:
+      - DOCKER_MODS=linuxserver/mods:swag-cloudflare-real-ip
+    ports:
+      - 80:80
+      - 443:443
+
+  bitwarden:
+    container_name: bitwarden
+    image: vaultwarden/server:alpine
+    restart: unless-stopped
+    env_file:
+      - .env/.env
+      - .env/.env-web
+    volumes:
+      - ../volumes/vaultwarden:/data
+
+  jdownloader:
+    container_name: jdownloader
+    image: jlesage/jdownloader-2
+    restart: unless-stopped
+      #ports:
+      #  - 5800:5800
+    volumes:
+      - ../volumes/jdownloader:/config
+      - /media/nfg/StoreInactive/Media:/output/Media
+
+  dealbot:
+    container_name: dealbot
+    image: nerdfoundry/dealbot:latest
+    restart: unless-stopped
+    tty: true
+    env_file:
+      - .env/.env
+      - .env/.env-web
+    environment:
+      # Import every 2min instead of default 5min
+      # - CRONTAB_PATTERN_IMPORT=*/2 * * * *
+      - LOG_LEVEL=TRACE
+    volumes:
+      - '../volumes/dealbot/junction:/app/junction'
+      - '../volumes/dealbot/db:/app/db'
+
+networks:
+  gateway_access:
+    name: gateway_access

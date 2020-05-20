@@ -1,0 +1,52 @@
+##############################################################################
+# Grafana Dashboards:
+# - Linux: https://grafana.com/grafana/dashboards/928
+# - Windows: https://grafana.com/grafana/dashboards/1902
+# - Docker: https://grafana.com/grafana/dashboards/????
+#
+##############################################################################
+
+version: '3.5'
+
+services:
+  telegraf:
+    image: telegraf:1.21-alpine
+    container_name: telegraf
+    restart: unless-stopped
+    env_file:
+      - .env/.env-monitoring
+      - .env/.env
+    hostname: nfgarmy
+    user: telegraf:999
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /sys:/rootfs/sys:ro
+      - /proc:/rootfs/proc:ro
+      - /etc:/rootfs/etc:ro
+  influxdb:
+    image: influxdb:2.1-alpine
+    container_name: influxdb
+    hostname: influxdb
+    restart: unless-stopped
+    env_file:
+      - .env/.env
+      - .env/.env-monitoring
+    ports:
+      - 8086:8086
+    volumes:
+      - ../volumes/influxdb/lib:/var/lib/influxdb2
+      - ../volumes/influxdb/etc:/etc/influxdb2
+    # Disable logging, because it writes a TON to disk
+    # logging:
+    #   driver: none
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: unless-stopped
+    env_file:
+      - .env/.env
+      - .env/.env-monitoring
+    ports:
+      - 3000:3000
+    volumes:
+      - ../volumes/grafana:/var/lib/grafana

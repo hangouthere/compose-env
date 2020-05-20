@@ -1,0 +1,41 @@
+input_number:
+  text_index:
+    initial: 0
+    min: 0
+    max: 100
+
+script:
+  input_text:
+    alias: Text to Enter on Remote
+    sequence:
+      - service_template: script.text_loop
+        data_template:
+          text: "Netflix"
+
+  text_loop:
+    alias: Loops Text
+    sequence:
+      - condition: template
+        value_template: "{{ 'true' if (states.input_number.text_index.state |int < text|length | int) else 'false' }}"
+      - service_template: script.key_input
+        data_template:
+          command: >-
+            {%- set index = states.input_number.text_index.state | int -%}
+            {{ text[index:index+1] }}
+          text: "{{ text }}"
+
+  key_input:
+    alias: Send Key Input
+    sequence:
+      - service: system_log.write
+        data_template:
+          message: "Sending Key Input {{ command | upper }}"
+          level: warning
+      - delay: '00:00:01'
+      - service: input_number.set_value
+        data_template:
+          entity_id: input_number.text_index
+          value: "{{ (states.input_number.text_index.state | int + 1) }}"
+      - service: script.text_loop
+        data_template:
+          text: "{{ text }}"

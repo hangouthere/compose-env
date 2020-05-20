@@ -1,0 +1,2651 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "$$hashKey": "object:34",
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "A Grafana dashboard for displaying Linux System and Docker Stats via Telegraf",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "gnetId": 15503,
+  "graphTooltip": 0,
+  "id": 6,
+  "iteration": 1642456738994,
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "info",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": true,
+      "title": "Discord",
+      "tooltip": "Have questions? Need help? Join our Discord!",
+      "type": "link",
+      "url": "https://url.nfgarmy.com/discord"
+    }
+  ],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 204,
+      "panels": [
+        {
+          "gridPos": {
+            "h": 21,
+            "w": 14,
+            "x": 0,
+            "y": 1
+          },
+          "id": 206,
+          "options": {
+            "content": "# Welcome!\n\nThis is a Dashboard designed for Linux hosts with Docker containers.\n\n    There is minimal support for Windows, there might be an alternative Dashboard for that later!\n\n## Prerequisites:\n\n* Telegraf\n    * TODO: Supply a full `telegraf.conf` per platform\n* InfluxDB2\n    * This Dashboard utilizes Flux Language for the query syntax, bringing this Dashboard up to current practices with InfluxDB/Flux\n* Grafana 8\n\n## Configuration\n\nBe sure to check out the `Variables` section to ensure you're accessing the right InfluxDBv2 Bucket.\n\n### Current Variables:\n  * InfluxTelegrafDataSource: \"${InfluxTelegrafDataSource}\"\n  * <span style=\"$baseStyle;\">baseStyle</span>\n  * <span style=\"$labelStyle;\">labelStyle</span>\n  * <span style=\"$valueStyle;\">valueStyle</span>\n  * <span style=\"$valueStyle2;\">valueStyle2</span>\n\n        Be sure to not modify any queries, as they are used for both display/informative as well as for calculations!\n\n  Once you've tweaked these variables to your liking, you can remove this entire row!\n\n  Enjoy!",
+            "mode": "markdown"
+          },
+          "pluginVersion": "8.3.3",
+          "type": "text"
+        }
+      ],
+      "title": "README",
+      "type": "row"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 183,
+      "panels": [],
+      "repeat": "host",
+      "title": "[$host] Overview",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${InfluxTelegrafDataSource}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(10, 10, 10)",
+                "value": null
+              },
+              {
+                "color": "dark-orange",
+                "value": 1
+              },
+              {
+                "color": "yellow",
+                "value": 15770000
+              },
+              {
+                "color": "red",
+                "value": 31540000
+              }
+            ]
+          },
+          "unit": "dtdhms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 0,
+        "y": 2
+      },
+      "id": 13,
+      "links": [],
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "value"
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${InfluxTelegrafDataSource}"
+          },
+          "hide": false,
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r[\"_measurement\"] == \"system\" and\r\n    r[\"_field\"] == \"uptime\" and \r\n    r[\"host\"] =~ /^${host}$/\r\n  )\r\n  |> aggregateWindow(every: 1s, fn: last, createEmpty: false)\r\n  |> last()\r\n  |> yield(name: \"last\")",
+          "refId": "System Uptime"
+        }
+      ],
+      "title": "Uptime",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "$InfluxTelegrafDataSource"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(0, 255, 255)",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 50
+              },
+              {
+                "color": "red",
+                "value": 75
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 2,
+        "y": 2
+      },
+      "hideTimeOverride": true,
+      "id": 126,
+      "links": [],
+      "options": {
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": ["mean"],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "hide": false,
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r[\"_measurement\"] == \"cpu\" and\r\n    r[\"_field\"] == \"usage_idle\" and \r\n    r[\"cpu\"] == \"cpu-total\" and\r\n    r[\"host\"] =~ /^${host}$/\r\n  )\r\n  |> map(fn: (r) => ({ r with _value: float(v: r._value) * -1.0 + 100.0 }))\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Total\" }))\r\n  |> aggregateWindow(every: $__interval, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+          "refId": "CPU Load Total"
+        }
+      ],
+      "timeFrom": "21s",
+      "title": "CPU Load",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${InfluxTelegrafDataSource}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 4,
+        "y": 2
+      },
+      "id": 195,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "/^Used$/",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "yp4vjpUGk"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r._measurement == \"mem\" and\r\n    r._field == \"used\" and\r\n    r.host =~ /^$host$/\r\n  )\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> last()\r\n  |> map(fn: (r) => ({ _value: r._value, _time: r._time, _field: \"Used\" }))\r\n  |> yield(name: \"last\")",
+          "refId": "Host Current RAM"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "yp4vjpUGk"
+          },
+          "hide": false,
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r._measurement == \"mem\" and\r\n    r._field == \"total\" and\r\n    r.host =~ /^$host$/\r\n  )\r\n  |> map(fn: (r) => ({ _value: r._value, _time: r._time, _field: \"Total\" }))\r\n  |> yield(name: \"total\")",
+          "refId": "Host Total RAM"
+        }
+      ],
+      "title": "Memory Usage",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${InfluxTelegrafDataSource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 6,
+        "y": 2
+      },
+      "id": 199,
+      "options": {
+        "content": "<span style=\"font-size: 75%\">\r\n\r\n    <div style=\"text-align: right;\">\r\n    <span style=\"$labelStyle; padding-right: 5px;\">viewing</span>\r\n    <span style=\"font-size: 200%; margin: 0;\">\r\n        <span style=\"$baseStyle\">$host</span>\r\n    </span>\r\n    </div>\r\n\r\n    <span style=\"display: inline-block; margin: 0; width: 75px; text-align: right; padding-right: 4px; $labelStyle\">Mem Total: </span><span style=\"font-size: 150%; $valueStyle\">${memTotal}GB</span><br />\r\n    <span style=\"display: inline-block; margin: 0; width: 75px; text-align: right; padding-right: 4px; $labelStyle\">Drives: </span><span style=\"font-size: 150%; $valueStyle\">${numDrives}</span><br />\r\n    <span style=\"display: inline-block; margin: 0; width: 75px; text-align: right; padding-right: 4px; $labelStyle\">Docker Containers: </span><span style=\"font-size: 150%; $valueStyle\">${numDockerRunning}</span>/<span style=\"font-size: 100%; $valueStyle2\">${numDockerTotal}</span><br />\r\n\r\n</span>",
+        "mode": "html"
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${InfluxTelegrafDataSource}"
+          },
+          "query": "from(bucket: \"sys-metrics\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"mem\" and r[\"_field\"] == \"total\" and r.host == \"${host}\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> last()\r\n  |> map(fn: (r) => ({\r\n    _value: r._value, _time: r._time, _field: r._field\r\n  }))\r\n  |> yield(name: \"last\")",
+          "refId": "A"
+        }
+      ],
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${InfluxTelegrafDataSource}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-orange",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 11,
+        "y": 2
+      },
+      "id": 197,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${InfluxTelegrafDataSource}"
+          },
+          "hide": false,
+          "query": "import \"experimental/query\"\r\n\r\nfrom(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n      r[\"_measurement\"] == \"processes\" and\r\n      r.host == \"$host\"\r\n  )\r\n  |> query.filterFields(\r\n    fields: [\"total_threads\", \"total\", \"sleeping\", \"idle\", \"zombies\"]\r\n  )\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> last()\r\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> drop(columns: [\"_time\", \"_start\", \"_stop\", \"_measurement\", \"host\"])\r\n  |> yield(name: \"last\")",
+          "refId": "Metric Types"
+        }
+      ],
+      "title": "Host Process Info",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "_time": false
+            },
+            "indexByName": {
+              "idle": 3,
+              "sleeping": 2,
+              "total": 1,
+              "total_threads": 0,
+              "zombies": 4
+            },
+            "renameByName": {
+              "idle": "Idle",
+              "idle {_start=\"2022-01-15 00:10:25.022 +0000 UTC\", _stop=\"2022-01-15 00:15:25.022 +0000 UTC\", host=\"nfgarmy\"}": "Idle",
+              "sleeping": "Sleeping",
+              "sleeping {_start=\"2022-01-15 00:10:25.022 +0000 UTC\", _stop=\"2022-01-15 00:15:25.022 +0000 UTC\", host=\"nfgarmy\"}": "Sleeping",
+              "total": "Total",
+              "total {_start=\"2022-01-15 00:10:25.022 +0000 UTC\", _stop=\"2022-01-15 00:15:25.022 +0000 UTC\", host=\"nfgarmy\"}": "Total",
+              "total_threads": "Total Threads",
+              "total_threads {_start=\"2022-01-15 00:10:25.022 +0000 UTC\", _stop=\"2022-01-15 00:15:25.022 +0000 UTC\", host=\"nfgarmy\"}": "Total threads",
+              "zombies": "Zombies",
+              "zombies {_start=\"2022-01-15 00:10:25.022 +0000 UTC\", _stop=\"2022-01-15 00:15:25.022 +0000 UTC\", host=\"nfgarmy\"}": "Zombies"
+            }
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "collapsed": true,
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "id": 16,
+      "panels": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "$InfluxTelegrafDataSource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 40,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": true,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 0,
+            "y": 7
+          },
+          "id": 1,
+          "links": [],
+          "options": {
+            "legend": {
+              "calcs": ["max"],
+              "displayMode": "table",
+              "placement": "right"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "yp4vjpUGk"
+              },
+              "hide": false,
+              "query": "import \"strings\"\r\n\r\nfrom(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n      r[\"_measurement\"] == \"cpu\" and\r\n      r[\"_field\"] == \"usage_user\" and \r\n      r[\"cpu\"] !~ /^cpu-total/ and\r\n      r[\"host\"] =~ /^${host}$/\r\n  )\r\n|> map(fn: (r) => ({\r\n    _time: r._time, _field: int(v: strings.replace(v: r.cpu, t: \"cpu\", u: \"\", i: 1)) + 1, _value: r._value\r\n  }))\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+              "refId": "CPU Usage"
+            }
+          ],
+          "title": "Host CPU Load History",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${InfluxTelegrafDataSource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "mappings": [],
+              "max": 100,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "dark-orange"
+                  },
+                  {
+                    "color": "#EAB839",
+                    "value": 50
+                  },
+                  {
+                    "color": "red",
+                    "value": 75
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 12,
+            "y": 7
+          },
+          "hideTimeOverride": true,
+          "id": 130,
+          "links": [],
+          "options": {
+            "displayMode": "gradient",
+            "orientation": "vertical",
+            "reduceOptions": {
+              "calcs": ["lastNotNull"],
+              "fields": "",
+              "values": false
+            },
+            "showUnfilled": false,
+            "text": {}
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "${InfluxTelegrafDataSource}"
+              },
+              "hide": false,
+              "query": "import \"strings\"\r\n\r\nfrom(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n      r[\"_measurement\"] == \"cpu\" and\r\n      r[\"_field\"] == \"usage_user\" and \r\n      r[\"cpu\"] !~ /^cpu-total/ and\r\n      r[\"host\"] =~ /^${host}$/\r\n  )\r\n  |> last()\r\n  |> map(fn: (r) => ({_value: r._value, _time: r._time, _field: int(v: strings.replace(v: r.cpu, t: \"cpu\", u: \"\", i: 1)) + 1 }))\r\n  |> yield(name: \"last\")",
+              "refId": "A"
+            }
+          ],
+          "title": "Host Core Loads",
+          "type": "bargauge"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${InfluxTelegrafDataSource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "axisSoftMax": 50,
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 50,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": true,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "CPU Total"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#64b0c8",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "IO Wait"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#ba43a9",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Nice"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#cca300",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Softirq"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "rgb(106, 218, 75)",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "System"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#ba43a9",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Total"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "blue",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "iowait"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "rgb(255, 0, 0)",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 12,
+            "x": 0,
+            "y": 13
+          },
+          "hideTimeOverride": false,
+          "id": 15,
+          "links": [],
+          "options": {
+            "legend": {
+              "calcs": ["lastNotNull", "mean", "max"],
+              "displayMode": "table",
+              "placement": "right",
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "${InfluxTelegrafDataSource}"
+              },
+              "hide": false,
+              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r[\"_measurement\"] == \"cpu\" and\r\n    r[\"_field\"] == \"usage_idle\" and \r\n    r[\"cpu\"] == \"cpu-total\" and\r\n    r[\"host\"] =~ /^${host}$/\r\n  )\r\n  |> map(fn: (r) => ({ r with _value: float(v: r._value) * -1.0 + 100.0 }))\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Total\" }))\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)",
+              "refId": "CPU Usage Total"
+            },
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "${InfluxTelegrafDataSource}"
+              },
+              "hide": false,
+              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r[\"_measurement\"] == \"cpu\" and\r\n    r[\"_field\"] == \"usage_iowait\" and \r\n    r[\"cpu\"] == \"cpu-total\" and\r\n    r[\"host\"] =~ /^${host}$/\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"IO Wait\" }))\r\n  |> aggregateWindow(every: $__interval, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+              "refId": "CPU Usage IOWait"
+            },
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "${InfluxTelegrafDataSource}"
+              },
+              "hide": false,
+              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r[\"_measurement\"] == \"cpu\" and\r\n    r[\"_field\"] == \"usage_nice\" and \r\n    r[\"cpu\"] == \"cpu-total\" and\r\n    r[\"host\"] =~ /^${host}$/\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Nice\" }))\r\n  |> aggregateWindow(every: $__interval, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+              "refId": "CPU Usage Nice"
+            },
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "${InfluxTelegrafDataSource}"
+              },
+              "hide": false,
+              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r[\"_measurement\"] == \"cpu\" and\r\n    r[\"_field\"] == \"usage_user\" and \r\n    r[\"cpu\"] == \"cpu-total\" and\r\n    r[\"host\"] =~ /^${host}$/\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"User\" }))\r\n  |> aggregateWindow(every: $__interval, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+              "refId": "CPU Usage User"
+            },
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "${InfluxTelegrafDataSource}"
+              },
+              "hide": false,
+              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r[\"_measurement\"] == \"cpu\" and\r\n    r[\"_field\"] == \"usage_softirq\" and \r\n    r[\"cpu\"] == \"cpu-total\" and\r\n    r[\"host\"] =~ /^${host}$/\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"Soft IRQ\" }))\r\n  |> aggregateWindow(every: $__interval, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+              "refId": "CPU Usage SoftIRQ"
+            },
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "${InfluxTelegrafDataSource}"
+              },
+              "hide": false,
+              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r[\"_measurement\"] == \"cpu\" and\r\n    r[\"_field\"] == \"usage_system\" and \r\n    r[\"cpu\"] == \"cpu-total\" and\r\n    r[\"host\"] =~ /^${host}$/\r\n  )\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: \"System\" }))\r\n  |> aggregateWindow(every: $__interval, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+              "refId": "CPU Usage System"
+            }
+          ],
+          "title": "Host CPU package",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "$InfluxTelegrafDataSource"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "axisSoftMax": 50,
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 50,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 1,
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 12,
+            "x": 12,
+            "y": 13
+          },
+          "id": 112,
+          "links": [],
+          "options": {
+            "legend": {
+              "calcs": ["lastNotNull", "mean", "max"],
+              "displayMode": "table",
+              "placement": "right",
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "yp4vjpUGk"
+              },
+              "hide": false,
+              "query": "from(bucket: v.defaultBucket)\r\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n|> filter(fn: (r) => \r\n    r._measurement == \"docker_container_cpu\" and\r\n    r._field == \"usage_percent\" and\r\n    r.host =~ /^$host$/\r\n)\r\n|> map(fn: (r) => ({ _value: r._value / float(v: ${cpucores}), _time: r._time, _field: r.container_name }))\r\n|> aggregateWindow(every: v.windowPeriod, fn: sum, createEmpty: false)\r\n|> yield(name: \"sum\")",
+              "refId": "Docker CPU Usage"
+            }
+          ],
+          "title": "Docker Containers CPU Usage",
+          "type": "timeseries"
+        }
+      ],
+      "title": "[$host] CPU Stats",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 7
+      },
+      "id": 191,
+      "panels": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${InfluxTelegrafDataSource}"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "Bytes",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 11,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "decbytes"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 12,
+            "x": 0,
+            "y": 24
+          },
+          "id": 11,
+          "links": [],
+          "options": {
+            "legend": {
+              "calcs": ["lastNotNull", "max"],
+              "displayMode": "table",
+              "placement": "right",
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "${InfluxTelegrafDataSource}"
+              },
+              "hide": false,
+              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r._measurement == \"mem\" and\r\n    r._field == \"used\" and\r\n    r.host =~ /^$host$/\r\n  )\r\n  |> map(fn: (r) => ({ _value: r._value, _time: r._time, _field: \"Used\" }))\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+              "refId": "Used Memory"
+            },
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "${InfluxTelegrafDataSource}"
+              },
+              "hide": false,
+              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r._measurement == \"mem\" and\r\n    r._field == \"buffered\" and\r\n    r.host =~ /^$host$/\r\n  )\r\n  |> map(fn: (r) => ({ _value: r._value, _time: r._time, _field: \"Buffered\" }))\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+              "refId": "Buffered Memory"
+            },
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "${InfluxTelegrafDataSource}"
+              },
+              "hide": false,
+              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r._measurement == \"mem\" and\r\n    r._field == \"cached\" and\r\n    r.host =~ /^$host$/\r\n  )\r\n  |> map(fn: (r) => ({ _value: r._value, _time: r._time, _field: \"Cached\" }))\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+              "refId": "Cached Memory"
+            },
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "${InfluxTelegrafDataSource}"
+              },
+              "hide": false,
+              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r._measurement == \"mem\" and\r\n    r._field == \"free\" and\r\n    r.host =~ /^$host$/\r\n  )\r\n  |> map(fn: (r) => ({ _value: r._value, _time: r._time, _field: \"Free\" }))\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+              "refId": "Free Memory"
+            },
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "${InfluxTelegrafDataSource}"
+              },
+              "hide": false,
+              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r._measurement == \"mem\" and\r\n    r._field == \"total\" and\r\n    r.host =~ /^$host$/\r\n  )\r\n  |> map(fn: (r) => ({ _value: r._value, _time: r._time, _field: \"Total\" }))\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+              "refId": "Total Memory"
+            }
+          ],
+          "title": "Host Memory Usage",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "$InfluxTelegrafDataSource"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 19,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 2,
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "bytes"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 12,
+            "x": 12,
+            "y": 24
+          },
+          "id": 114,
+          "links": [],
+          "options": {
+            "legend": {
+              "calcs": ["lastNotNull", "mean", "max"],
+              "displayMode": "table",
+              "placement": "right",
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "yp4vjpUGk"
+              },
+              "hide": false,
+              "query": "from(bucket: v.defaultBucket)\r\n    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n    |> filter(fn: (r) => \r\n        r._measurement == \"docker_container_mem\" and\r\n        r._field == \"usage\" and\r\n        r.host =~ /^$host$/\r\n    )\r\n    |> map(fn: (r) => ({ _value: r._value / $cpucores, _time: r._time, _field: r.container_name }))\r\n    |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n    |> yield(name: \"last\")",
+              "refId": "Docker Container Memory Usage"
+            }
+          ],
+          "title": "Container Memory Usage",
+          "type": "timeseries"
+        }
+      ],
+      "title": "[$host] Memory Stats",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "id": 193,
+      "panels": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${InfluxTelegrafDataSource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 50,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "Bps"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Received"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#70dbed",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Sent"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#bf1b00",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "eth0 In"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "green",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "eth0 Out"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "red",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "eth0 Recieved"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "blue",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "eth0 Sent"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "red",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 24,
+            "x": 0,
+            "y": 35
+          },
+          "id": 10,
+          "links": [],
+          "options": {
+            "legend": {
+              "calcs": ["lastNotNull", "max"],
+              "displayMode": "table",
+              "placement": "right",
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "${InfluxTelegrafDataSource}"
+              },
+              "hide": false,
+              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r._measurement == \"net\" and\r\n    r._field == \"bytes_recv\" and\r\n    r.host =~ /^$host$/\r\n  )\r\n  |> derivative( unit: 1s, nonNegative: true, columns: [\"_value\"], timeColumn: \"_time\" )\r\n  |> map(fn: (r) => ({ _value: r._value, _time: r._time, _field: \"In\" }))\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+              "refId": "Network In"
+            },
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "${InfluxTelegrafDataSource}"
+              },
+              "hide": false,
+              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r._measurement == \"net\" and\r\n    r._field == \"bytes_sent\" and\r\n    r.host =~ /^$host$/\r\n  )\r\n  |> derivative( unit: 1s, nonNegative: true, columns: [\"_value\"], timeColumn: \"_time\" )\r\n  |> map(fn: (r) => ({ _value: r._value, _time: r._time, _field: \"Out\" }))\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+              "refId": "Network Out"
+            }
+          ],
+          "title": "Network",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "$InfluxTelegrafDataSource"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 50,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "bytes"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 12,
+            "x": 0,
+            "y": 41
+          },
+          "id": 118,
+          "links": [],
+          "options": {
+            "legend": {
+              "calcs": ["lastNotNull", "mean", "max"],
+              "displayMode": "table",
+              "placement": "right",
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "yp4vjpUGk"
+              },
+              "hide": false,
+              "query": "from(bucket: v.defaultBucket)\r\n    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n    |> filter(fn: (r) => \r\n    r._measurement == \"docker_container_net\" and\r\n    r._field == \"rx_bytes\" and\r\n    r.host =~ /^$host$/\r\n    )\r\n    |> derivative( unit: 1s, nonNegative: true, columns: [\"_value\"], timeColumn: \"_time\" )\r\n    |> map(fn: (r) => ({ _value: r._value, _time: r._time, _field: r.container_name }))\r\n    |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n    |> yield(name: \"last\")",
+              "refId": "Docker RX Information"
+            }
+          ],
+          "title": "Container RX",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "$InfluxTelegrafDataSource"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 50,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "bytes"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 12,
+            "x": 12,
+            "y": 41
+          },
+          "id": 166,
+          "links": [],
+          "options": {
+            "legend": {
+              "calcs": ["lastNotNull", "mean", "max"],
+              "displayMode": "table",
+              "placement": "right"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "hide": false,
+              "query": "from(bucket: v.defaultBucket)\r\n    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n    |> filter(fn: (r) => \r\n    r._measurement == \"docker_container_net\" and\r\n    r._field == \"tx_bytes\" and\r\n    r.host =~ /^$host$/\r\n    )\r\n    |> derivative( unit: 1s, nonNegative: true, columns: [\"_value\"], timeColumn: \"_time\" )\r\n    |> map(fn: (r) => ({ _value: r._value, _time: r._time, _field: r.container_name }))\r\n    |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n    |> yield(name: \"last\")",
+              "refId": "Docker TX Information"
+            }
+          ],
+          "title": "Container TX",
+          "type": "timeseries"
+        }
+      ],
+      "title": "[$host] Network Stats",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "id": 18,
+      "panels": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "$InfluxTelegrafDataSource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "displayMode": "auto",
+                "filterable": false
+              },
+              "mappings": [
+                {
+                  "options": {
+                    "/": {
+                      "index": 0,
+                      "text": "Root FS (/)"
+                    }
+                  },
+                  "type": "value"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              },
+              "unit": "decbytes"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Free"
+                },
+                "properties": [
+                  {
+                    "id": "custom.displayMode",
+                    "value": "color-text"
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "percentage",
+                      "steps": [
+                        {
+                          "color": "green"
+                        },
+                        {
+                          "color": "orange",
+                          "value": 5
+                        },
+                        {
+                          "color": "red",
+                          "value": 25
+                        },
+                        {
+                          "color": "yellow",
+                          "value": 75
+                        },
+                        {
+                          "color": "green",
+                          "value": 99
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "unit",
+                    "value": "decgbytes"
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 114
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "used"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 110
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Total"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 160
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Used %"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 115
+                  },
+                  {
+                    "id": "unit",
+                    "value": "percent"
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "percentage",
+                      "steps": [
+                        {
+                          "color": "green"
+                        },
+                        {
+                          "color": "#6ED0E0",
+                          "value": 24
+                        },
+                        {
+                          "color": "yellow",
+                          "value": 49
+                        },
+                        {
+                          "color": "orange",
+                          "value": 74
+                        },
+                        {
+                          "color": "red",
+                          "value": 89
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "custom.displayMode",
+                    "value": "color-background"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 0,
+            "y": 36
+          },
+          "hideTimeOverride": false,
+          "id": 85,
+          "links": [],
+          "options": {
+            "footer": {
+              "fields": "",
+              "reducer": ["sum"],
+              "show": false
+            },
+            "frameIndex": 0,
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": false,
+                "displayName": "Disk"
+              }
+            ]
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "yp4vjpUGk"
+              },
+              "hide": false,
+              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |>    filter(fn: (r) => r._measurement == \"disk\")\r\n  |>    filter(fn: (r) => r._field == \"free\" or r._field == \"used\" or r._field == \"total\")\r\n  |>    filter(fn: (r) => r.host =~ /^$host$/)\r\n  |>    filter(fn: (r) => r.path !~ /\\/var\\/lib\\/docker\\/btrfs.*/)\r\n  |>    filter(fn: (r) => r.device !~ /loop.*/)\r\n  |> last()\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      _value: if r._field == \"free\" then float(v: r._value) / 1000000000.0 else float(v: r._value),\r\n      _value: if r._field == \"free\" then float(v: r._value) / 1000000000.0 else float(v: r._value),\r\n    }))\r\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> drop(columns: [\"path\", \"fstype\", \"_measurement\", \"host\", \"mode\", \"used_percent\", \"_time\", \"_start\", \"_stop\"])\r\n  |> group()\r\n  |> yield(name: \"last\")",
+              "refId": "Storage Consumption"
+            }
+          ],
+          "title": "Storage Consumption",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true
+                },
+                "indexByName": {
+                  "device": 0,
+                  "free": 1,
+                  "total": 3,
+                  "used": 2
+                },
+                "renameByName": {
+                  "Free": "",
+                  "device": "Disk",
+                  "free": "Free",
+                  "fstype": "File System",
+                  "path": "Disk",
+                  "total": "Total",
+                  "used": "Used"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${InfluxTelegrafDataSource}"
+          },
+          "description": "The panel shows the growth of the fuse filesystem including any cache drives. ",
+          "fieldConfig": {
+            "defaults": {
+              "decimals": 2,
+              "mappings": [
+                {
+                  "options": {
+                    "match": "null",
+                    "result": {
+                      "text": "N/A"
+                    }
+                  },
+                  "type": "special"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "blue"
+                  }
+                ]
+              },
+              "unit": "decbytes"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 6,
+            "x": 12,
+            "y": 36
+          },
+          "hideTimeOverride": true,
+          "id": 78,
+          "interval": "",
+          "links": [],
+          "maxDataPoints": 3000,
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": ["diff"],
+              "fields": "",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "alias": "Space Used",
+              "datasource": {
+                "type": "influxdb",
+                "uid": "yp4vjpUGk"
+              },
+              "groupBy": [
+                {
+                  "params": ["$__interval"],
+                  "type": "time"
+                }
+              ],
+              "measurement": "disk",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r._measurement == \"disk\" and\r\n    r._field == \"used\" and\r\n    r.host =~ /^$host$/ \r\n  )\r\n  |> map(fn: (r) => ({\r\n    _time: r._time, _field: r.device, _value: r._value\r\n  }))\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+              "rawQuery": false,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": ["used"],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "device",
+                  "operator": "=",
+                  "value": "shfs"
+                }
+              ]
+            }
+          ],
+          "timeFrom": "now/d",
+          "title": "Data Growth Today",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${InfluxTelegrafDataSource}"
+          },
+          "description": "The panel shows the growth of the fuse filesystem including any cache drives. ",
+          "fieldConfig": {
+            "defaults": {
+              "decimals": 2,
+              "mappings": [
+                {
+                  "options": {
+                    "match": "null",
+                    "result": {
+                      "text": "N/A"
+                    }
+                  },
+                  "type": "special"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "orange"
+                  }
+                ]
+              },
+              "unit": "decbytes"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 6,
+            "x": 18,
+            "y": 36
+          },
+          "hideTimeOverride": true,
+          "id": 80,
+          "interval": "2h",
+          "links": [],
+          "maxDataPoints": 3000,
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": ["diff"],
+              "fields": "",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "alias": "Space Used",
+              "datasource": {
+                "type": "influxdb",
+                "uid": "${InfluxTelegrafDataSource}"
+              },
+              "groupBy": [
+                {
+                  "params": ["$__interval"],
+                  "type": "time"
+                }
+              ],
+              "measurement": "disk",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r._measurement == \"disk\" and\r\n    r._field == \"used\" and\r\n    r.host =~ /^$host$/ \r\n  )\r\n  |> map(fn: (r) => ({\r\n    _time: r._time, _field: r.device, _value: r._value\r\n  }))\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+              "rawQuery": false,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": ["used"],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "device",
+                  "operator": "=",
+                  "value": "shfs"
+                }
+              ]
+            }
+          ],
+          "timeFrom": "now/M",
+          "title": "Data Growth This Month",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${InfluxTelegrafDataSource}"
+          },
+          "description": "The panel shows the growth of the fuse filesystem including any cache drives. ",
+          "fieldConfig": {
+            "defaults": {
+              "decimals": 2,
+              "mappings": [
+                {
+                  "options": {
+                    "match": "null",
+                    "result": {
+                      "text": "N/A"
+                    }
+                  },
+                  "type": "special"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "yellow"
+                  }
+                ]
+              },
+              "unit": "decbytes"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 6,
+            "x": 12,
+            "y": 39
+          },
+          "hideTimeOverride": true,
+          "id": 79,
+          "interval": "2h",
+          "links": [],
+          "maxDataPoints": 3000,
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": ["diff"],
+              "fields": "",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "alias": "Space Used",
+              "datasource": {
+                "type": "influxdb",
+                "uid": "yp4vjpUGk"
+              },
+              "groupBy": [
+                {
+                  "params": ["$__interval"],
+                  "type": "time"
+                }
+              ],
+              "measurement": "disk",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r._measurement == \"disk\" and\r\n    r._field == \"used\" and\r\n    r.host =~ /^$host$/ \r\n  )\r\n  |> map(fn: (r) => ({\r\n    _time: r._time, _field: r.device, _value: r._value\r\n  }))\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+              "rawQuery": false,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": ["used"],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "device",
+                  "operator": "=",
+                  "value": "shfs"
+                }
+              ]
+            }
+          ],
+          "timeFrom": "now/w",
+          "title": "Data Growth This Week",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${InfluxTelegrafDataSource}"
+          },
+          "description": "The panel shows the growth of the fuse filesystem including any cache drives. ",
+          "fieldConfig": {
+            "defaults": {
+              "decimals": 2,
+              "mappings": [
+                {
+                  "options": {
+                    "match": "null",
+                    "result": {
+                      "text": "N/A"
+                    }
+                  },
+                  "type": "special"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red"
+                  }
+                ]
+              },
+              "unit": "decbytes"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 6,
+            "x": 18,
+            "y": 39
+          },
+          "hideTimeOverride": true,
+          "id": 81,
+          "interval": "2h",
+          "links": [],
+          "maxDataPoints": 3000,
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": ["diff"],
+              "fields": "",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "alias": "Space Used",
+              "datasource": {
+                "type": "influxdb",
+                "uid": "yp4vjpUGk"
+              },
+              "groupBy": [
+                {
+                  "params": ["$__interval"],
+                  "type": "time"
+                }
+              ],
+              "hide": false,
+              "measurement": "disk",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r._measurement == \"disk\" and\r\n    r._field == \"used\" and\r\n    r.host =~ /^$host$/\r\n  )\r\n  |> map(fn: (r) => ({\r\n    _time: r._time, _field: r.device, _value: r._value\r\n  }))\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+              "rawQuery": false,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": ["used"],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "device",
+                  "operator": "=",
+                  "value": "shfs"
+                }
+              ]
+            }
+          ],
+          "timeFrom": "now/y",
+          "title": "Data Growth This Year",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "$InfluxTelegrafDataSource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 50,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "Bps"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 0,
+            "y": 42
+          },
+          "id": 159,
+          "links": [],
+          "options": {
+            "legend": {
+              "calcs": ["lastNotNull", "mean", "max"],
+              "displayMode": "table",
+              "placement": "right"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "hide": false,
+              "query": "from(bucket: v.defaultBucket)\r\n    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n    |> filter(fn: (r) => \r\n    r._measurement == \"diskio\" and\r\n    r._field == \"write_bytes\" and\r\n    r.host =~ /^$host$/ and\r\n    r.name !~ /^sd.*1|md|loop|nvme0n\\dp.*/\r\n    )\r\n    |> derivative( unit: 1s, nonNegative: true, columns: [\"_value\"], timeColumn: \"_time\" )\r\n    |> map(fn: (r) => ({ _value: r._value, _time: r._time, _field: r.name }))\r\n    |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)",
+              "refId": "All Disks Write Information"
+            }
+          ],
+          "title": "All Disk Write",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "$InfluxTelegrafDataSource"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 50,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "Bps"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 12,
+            "y": 42
+          },
+          "id": 87,
+          "links": [],
+          "options": {
+            "legend": {
+              "calcs": ["lastNotNull", "mean", "max"],
+              "displayMode": "table",
+              "placement": "right"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "hide": false,
+              "query": "from(bucket: v.defaultBucket)\r\n    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n    |> filter(fn: (r) => \r\n    r._measurement == \"diskio\" and\r\n    r._field == \"read_bytes\" and\r\n    r.host =~ /^$host$/ and\r\n    r.name !~ /^sd.*1|md|loop|nvme0n\\dp.*/\r\n    )\r\n    |> derivative( unit: 1s, nonNegative: true, columns: [\"_value\"], timeColumn: \"_time\" )\r\n    |> map(fn: (r) => ({ _value: r._value, _time: r._time, _field: r.name }))\r\n    |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)",
+              "refId": "All Disks Read Information"
+            }
+          ],
+          "title": "All Disk Read",
+          "type": "timeseries"
+        },
+        {
+          "gridPos": {
+            "h": 4,
+            "w": 12,
+            "x": 12,
+            "y": 48
+          },
+          "id": 202,
+          "options": {
+            "content": "",
+            "mode": "markdown"
+          },
+          "pluginVersion": "8.3.3",
+          "transparent": true,
+          "type": "text"
+        }
+      ],
+      "title": "[$host] Disks Stats",
+      "type": "row"
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 34,
+  "style": "dark",
+  "tags": ["telegraf", "influxdb2", "fluxquery"],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "InfluxDB",
+          "value": "InfluxDB"
+        },
+        "description": "InfluxDB Data Source that houses Telegraf Data from various Hosts, including Docker metrics.",
+        "hide": 2,
+        "includeAll": false,
+        "label": "InfluxDB/Telegraf Data Source",
+        "multi": false,
+        "name": "InfluxTelegrafDataSource",
+        "options": [],
+        "query": "influxdb",
+        "queryValue": "",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "description": "This would be your \"Main\" color/style, something that you want to see the most of on your screen.",
+        "hide": 2,
+        "label": "Base Style for Components/Display",
+        "name": "baseStyle",
+        "query": "color: rgb(243, 124, 30); text-shadow: 0px 0px 4px rgb(243, 124, 30);",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "description": "Label Color/Style when representing Data in a custom text panel.",
+        "hide": 2,
+        "label": "Label Style for Components/Display",
+        "name": "labelStyle",
+        "query": "color: rgb(200, 200, 200);  text-shadow: 0px 0px 4px rgba(255, 255, 255, 100);",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "description": "Value Color/Style when representing Data in a custom text panel.",
+        "hide": 2,
+        "label": "Value Style for Components/Display",
+        "name": "valueStyle",
+        "query": "color: #05a8ff; text-shadow: 0px 0px 4px #05a8ff;",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "description": "Value Color/Style when representing Data in a custom text panel.",
+        "hide": 2,
+        "label": "Value Style for Components/Display",
+        "name": "valueStyle2",
+        "query": "color: #0d7cb8; text-shadow: 0px 0px 4px #0d7cb8;",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "description": "DO NOT EDIT VARIABLES BELOW THIS",
+        "hide": 2,
+        "label": "DO NOT EDIT VARIABLES BELOW THIS",
+        "name": "i______________",
+        "query": "",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "nfgarmy",
+          "value": "nfgarmy"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "InfluxDB"
+        },
+        "definition": "import \"influxdata/influxdb/v1\"\r\n\r\nv1.tagValues(\r\n  bucket: v.defaultBucket,\r\n  tag: \"host\",\r\n  predicate: (r) => true\r\n)",
+        "description": "Which Host to actively Monitor",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Monitor Host",
+        "multi": false,
+        "name": "host",
+        "options": [],
+        "query": "import \"influxdata/influxdb/v1\"\r\n\r\nv1.tagValues(\r\n  bucket: v.defaultBucket,\r\n  tag: \"host\",\r\n  predicate: (r) => true\r\n)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "12",
+          "value": "12"
+        },
+        "datasource": {
+          "uid": "$InfluxTelegrafDataSource"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"system\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"n_cpus\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+        "description": "Holds the number of CPU Cores detected for the current $host",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Number of CPU Cores for $host",
+        "multi": false,
+        "name": "cpucores",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"system\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"n_cpus\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "32",
+          "value": "32"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${InfluxTelegrafDataSource}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"mem\" and r[\"_field\"] == \"total\" and r.host == \"${host}\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> last()\r\n  |> map(fn: (r) => ({\r\n    _time: r._time, _value: r._value / 1000 / 1000 / 1024\r\n  }))\r\n  |> yield(name: \"last\")",
+        "description": "Holds the total amount of memory detected for the current $host (formatted to si)",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Total Memory for $host",
+        "multi": false,
+        "name": "memTotal",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"mem\" and r[\"_field\"] == \"total\" and r.host == \"${host}\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> last()\r\n  |> map(fn: (r) => ({\r\n    _time: r._time, _value: r._value / 1000 / 1000 / 1024\r\n  }))\r\n  |> yield(name: \"last\")",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1",
+          "value": "1"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${InfluxTelegrafDataSource}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n      r[\"_measurement\"] == \"disk\" and\r\n      r[\"_field\"] == \"total\" and\r\n      r.host =~ /^${host}$/\r\n  )\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> last()\r\n  |> drop(columns: [\"path\", \"device\"])\r\n  |> map(fn: (r) => ({\r\n      r with _field: \"Count\", _value: r._value, _time: r._time\r\n  }))\r\n  |> count()\r\n  |> yield(name: \"count\")\r\n",
+        "description": "Holds the number of drives detected for the current $host",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Number of Drives for $host",
+        "multi": false,
+        "name": "numDrives",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n      r[\"_measurement\"] == \"disk\" and\r\n      r[\"_field\"] == \"total\" and\r\n      r.host =~ /^${host}$/\r\n  )\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> last()\r\n  |> drop(columns: [\"path\", \"device\"])\r\n  |> map(fn: (r) => ({\r\n      r with _field: \"Count\", _value: r._value, _time: r._time\r\n  }))\r\n  |> count()\r\n  |> yield(name: \"count\")\r\n",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "12",
+          "value": "12"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${InfluxTelegrafDataSource}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r[\"host\"] == \"${host}\" and\r\n    r[\"_measurement\"] == \"docker\" and\r\n    r[\"_field\"] == \"n_containers\"\r\n  )\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+        "description": "Holds the number of Docker Containers detected for the current $host",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Number of Docker Containers for $host",
+        "multi": true,
+        "name": "numDockerTotal",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r[\"host\"] == \"${host}\" and\r\n    r[\"_measurement\"] == \"docker\" and\r\n    r[\"_field\"] == \"n_containers\"\r\n  )\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "12",
+          "value": "12"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${InfluxTelegrafDataSource}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r[\"host\"] == \"${host}\" and\r\n    r[\"_measurement\"] == \"docker\" and\r\n    r[\"_field\"] == \"n_containers_running\"\r\n  )\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+        "description": "Holds the number of Docker Containers Running detected for the current $host",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Number of Docker Containers Running on $host",
+        "multi": true,
+        "name": "numDockerRunning",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r[\"host\"] == \"${host}\" and\r\n    r[\"_measurement\"] == \"docker\" and\r\n    r[\"_field\"] == \"n_containers_running\"\r\n  )\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-5m",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"],
+    "time_options": ["5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d", "30d"]
+  },
+  "timezone": "browser",
+  "title": "Codex's Linux/Docker Dashboard",
+  "uid": "e5w1Y6gnk",
+  "version": 86,
+  "weekStart": ""
+}

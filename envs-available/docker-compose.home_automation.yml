@@ -1,0 +1,58 @@
+services:
+  zwavejs2mqtt:
+    container_name: zwavejs2mqtt
+    image: zwavejs/zwavejs2mqtt:latest
+    restart: unless-stopped
+    tty: true
+    stop_signal: SIGINT
+    env_file:
+      - .env/.env
+      - .env/.env-home-automation
+    devices:
+      - /dev/serial/by-id/usb-0658_0200-if00:/dev/zwave
+    volumes:
+      - ../volumes/zwave-config:/usr/src/app/store
+    ports:
+      - "8091:8091" # port for web interface
+    networks:
+      - default
+      - gateway_access
+
+  home-assistant:
+    container_name: home-assistant
+    image: ghcr.io/home-assistant/home-assistant:stable
+    restart: unless-stopped
+    env_file:
+      - .env/.env
+      - .env/.env-home-automation
+    ports:
+      - "8123:8123"
+    volumes:
+      - ../volumes/ha:/config
+    devices:
+      - /dev/serial/by-id/usb-0658_0200-if00:/zwaveusbstick
+    networks:
+      - default
+      - gateway_access
+
+  motioneye:
+    container_name: motioneye
+    image: ccrisan/motioneye:master-amd64
+    restart: unless-stopped
+    env_file:
+      - .env/.env
+      - .env/.env-home-automation
+    ports:
+      - "8766:8081"
+      - "8765:8765"
+    volumes:
+      - ../volumes/motioneye/etc:/etc/motioneye
+      - ../volumes/motioneye/var_lib:/var/lib/motioneye
+    networks:
+      - default
+      - gateway_access
+
+networks:
+  gateway_access:
+    name: gateway_access
+    external: true
