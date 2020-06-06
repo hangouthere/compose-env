@@ -31,6 +31,7 @@ services:
       # - DUCKDNSTOKEN=${TOKEN_DUCKDNS}
     volumes:
       - ./volumes/letsencrypt:/config
+      - ./volumes/nfg_website:/config/www
     ports:
       - 80:80
       - 443:443
