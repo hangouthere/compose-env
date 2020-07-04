@@ -1,18 +1,16 @@
 version: "3.5"
 
 services:
-  # plex:
-  #   container_name: plex
-  #   image: linuxserver/plex
-  #   network_mode: host
-  #   environment:
-  #     - PUID=1000
-  #     - PGID=1000
-  #     - VERSION=docker
-  #   volumes:
-  #     - ./volumes/plex:/config
-  #     - /media/nfg/Media/Video/Movies:/movies
-  #   restart: unless-stopped
+  plex:
+    container_name: plex
+    image: linuxserver/plex
+    network_mode: host
+    environment:
+      - VERSION=docker
+    volumes:
+      - ./volumes/plex:/config
+      - /media/nfg/Media/Video/Movies:/movies
+    restart: unless-stopped
   deluge:
     container_name: deluge
     image: linuxserver/deluge

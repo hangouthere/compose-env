@@ -1,15 +1,24 @@
 version: "3.5"
 
 services:
-  # nginx:
-  #   container_name: nfg_website
-  #   image: nginx:mainline-alpine
-  #   restart: unless-stopped
+  mariadb:
+    container_name: mariadb
+    image: linuxserver/mariadb
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./volumes/mariadb:/config
+    ports:
+      - 3306:3306
+
+  # phpmyadmin:
+  #   container_name: phpmyadmin
+  #   image: phpmyadmin/phpmyadmin
   #   env_file: .env
   #   ports:
-  #     - 80:80
-  #   volumes:
-  #     - ./volumes/nfg_website:/usr/share/nginx/html
+  #     - 8080:80
+  #   external_links:
+  #     - mariadb:db
 
   letsencrypt:
     container_name: letsencrypt
@@ -19,10 +28,9 @@ services:
     cap_add:
       - NET_ADMIN
     environment:
-      - SUBDOMAINS=wildcard
       # - STAGING=true
-
       - URL=${URL_NFGARMY}
+      - SUBDOMAINS=wildcard
       - VALIDATION=dns
       - DNSPLUGIN=cloudflare
       ########
@@ -31,7 +39,6 @@ services:
       # - DUCKDNSTOKEN=${TOKEN_DUCKDNS}
     volumes:
       - ./volumes/letsencrypt:/config
-      - ./volumes/nfg_website:/config/www
     ports:
       - 80:80
       - 443:443
