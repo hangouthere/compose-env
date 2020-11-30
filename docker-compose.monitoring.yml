@@ -60,7 +60,7 @@ services:
       - /sys:/rootfs/sys:ro
       - /proc:/rootfs/proc:ro
       - /etc:/rootfs/etc:ro
-  #chronograf:
+  # chronograf:
   #  image: chronograf
   #  container_name: chronograf
   #  restart: unless-stopped
@@ -70,10 +70,10 @@ services:
   #  volumes:
   #    - chronograf-volume:/var/lib/chronograf
   #  environment:
-  #    INFLUXDB_URL: http://192.168.1.55:8086
+  #    INFLUXDB_URL: http://influxdb:8086
 
 volumes:
-  #chronograf-volume:
+  # chronograf-volume:
   #  name: chronograf-volume
   grafana-volume:
     external: true

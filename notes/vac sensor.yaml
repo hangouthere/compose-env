@@ -13,8 +13,6 @@ sensor:
     sensors:
       vacuum_status:
         friendly_name: Status
-        entity_id:
-          - vacuum.xiaomi_vacuum_cleaner
         value_template: 'Status: {{ states.vacuum.xiaomi_vacuum_cleaner.attributes.status }}'
         icon_template: >
           {% set val =  states.vacuum.xiaomi_vacuum_cleaner.attributes.status  %}

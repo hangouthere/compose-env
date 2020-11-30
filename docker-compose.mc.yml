@@ -1,55 +1,76 @@
 version: "3.5"
 
 services:
-  minecraft-bedrock:
-    container_name: minecraft-bedrock
-    image: itzg/minecraft-bedrock-server
+  # minecraft-bedrock:
+  #   container_name: minecraft-bedrock
+  #   image: itzg/minecraft-bedrock-server
+  #   restart: unless-stopped
+  #   env_file: .env
+  #   tty: true
+  #   stdin_open: true
+  #   environment:
+  #     EULA: "TRUE"
+  #     ALLOW_CHEATS: 'true'
+  #     GAMEMODE: creative
+  #     DIFFICULTY: normal
+  #     VIEW_DISTANCE: 24
+  #     PLAYER_IDLE_TIMEOUT: 10
+  #     SERVER_NAME: "NFGArmy Bedrock Server!"
+  #     MAX_PLAYERS: 40
+  #   ports:
+  #     - 19132:19132/udp
+  #   volumes:
+  #     - mc-bedrock-volume:/data
+
+  minecraft-java:
+    container_name: minecraft-java
+    image: itzg/minecraft-server
     restart: unless-stopped
     env_file: .env
     tty: true
     stdin_open: true
+    restart: always
+    ports:
+      - "25565:25565"
+      - "28016:28016"
+    volumes:
+      - ./volumes/minecraft/java-vanilla++:/data
     environment:
       EULA: "TRUE"
-      ALLOW_CHEATS: 'true'
-      GAMEMODE: creative
-      DIFFICULTY: normal
-      VIEW_DISTANCE: 24
-      PLAYER_IDLE_TIMEOUT: 10
-      SERVER_NAME: "NFGArmy Bedrock Server!"
-      MAX_PLAYERS: 40
-    ports:
-      - 19132:19132/udp
-    volumes:
-      - mc-bedrock-volume:/data
+      TYPE: "FORGE"
+      FORGEVERSION: "35.1.4"
+      # ENABLE_RCON: "true"
+      # RCON_PASSWORD: "testing"
+      # RCON_PORT: 9201
 
-  # minecraft-java:
-  #   container_name: minecraft-java
-  #   image: itzg/minecraft-server
+  # rcon:
+  #   image: itzg/rcon
+  #   ports:
+  #     - "4326:4326"
+  #     - "4327:4327"
+  #   volumes:
+  #     - "rcon-volume:/opt/rcon-web-admin/db"
+
+  # geysermc:
+  #   container_name: geysermc
+  #   image: rveach/geyser-docker
   #   restart: unless-stopped
   #   env_file: .env
   #   ports:
-  #     - "25565:25565"
-  #     - "28016:28016"
+  #     - 19133:19133/udp
   #   volumes:
-  #     - "mc-java-volume:/data"
+  #     - "geyser-volume:/data"
   #   environment:
-  #     EULA: "TRUE"
-  #     ENABLE_RCON: "true"
-  #     RCON_PASSWORD: "testing"
-  #     RCON_PORT: 9201
-  #   restart: always
-  ## rcon:
-  ##   image: itzg/rcon
-  ##   ports:
-  ##     - "4326:4326"
-  ##     - "4327:4327"
-  ##   volumes:
-  ##     - "rcon-volume:/opt/rcon-web-admin/db"
+  #     BEDROCK_PORT: 19133
+  #     BEDROCK_MOTD1: "NFGArmy Crossplay Server"
+  #     BEDROCK_MOTD2: "What? Bedrock and Java Together?!?"
 
-volumes:
+# volumes:
   # mc-java-volume:
   #   external: true
-  mc-bedrock-volume:
-    external: true
+  # mc-bedrock-volume:
+  #   external: true
+  # geyser-volume:
+  #   external: true
   # rcon-volume:
   #   external: true
