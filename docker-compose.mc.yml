@@ -39,6 +39,8 @@ services:
       EULA: "TRUE"
       TYPE: "FORGE"
       FORGEVERSION: "35.1.4"
+      MEMORY: "4G"
+      USE_AIKAR_FLAGS: "true"
       # ENABLE_RCON: "true"
       # RCON_PASSWORD: "testing"
       # RCON_PORT: 9201
