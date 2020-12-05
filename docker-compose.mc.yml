@@ -37,9 +37,10 @@ services:
       - ./volumes/minecraft/java-vanilla++:/data
     environment:
       EULA: "TRUE"
+      VERSION: "1.16.4"
       TYPE: "FORGE"
-      FORGEVERSION: "35.1.4"
-      MEMORY: "4G"
+      FORGEVERSION: "35.1.7"
+      MEMORY: "8G"
       USE_AIKAR_FLAGS: "true"
       # ENABLE_RCON: "true"
       # RCON_PASSWORD: "testing"
