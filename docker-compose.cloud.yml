@@ -1,4 +1,4 @@
-version: "3.5"
+version: '3.5'
 
 services:
   sync_gdrive_nerdfoundry:
@@ -10,48 +10,48 @@ services:
       - SYNC_DESTINATION=GDrive_nerdfoundry
     volumes:
       - ./volumes/rclone:/config # needs to stay a directory
-      - ../GDrive_nerdfoundry:/data
+      - ../cloud-sync/GDrive_nerdfoundry:/data
 
-  sync_gdrive_thegorenas:
-    container_name: sync_gdrive_thegorenas
+  sync_gdrive_tg:
+    container_name: sync_gdrive_tg
     image: nerdfoundry/rclonesync
     restart: unless-stopped
     env_file: .env
     environment:
-      - SYNC_DESTINATION=GDrive_thegorenas
+      - SYNC_DESTINATION=GDrive_tg
     volumes:
       - ./volumes/rclone:/config # needs to stay a directory
-      - ../GDrive_thegorenas:/data
+      - ../cloud-sync/GDrive_tg:/data
 
-  sync_gdrive_jmgorena:
-    container_name: sync_gdrive_jmgorena
+  sync_gdrive_jm:
+    container_name: sync_gdrive_jm
     image: nerdfoundry/rclonesync
     restart: unless-stopped
     env_file: .env
     environment:
-      - SYNC_DESTINATION=GDrive_jmgorena
+      - SYNC_DESTINATION=GDrive_jm
     volumes:
       - ./volumes/rclone:/config # needs to stay a directory
-      - ../GDrive_jmgorena:/data
+      - ../cloud-sync/GDrive_jm:/data
 
-  sync_gdrive_argorena:
-    container_name: sync_gdrive_argorena
+  sync_gdrive_ar:
+    container_name: sync_gdrive_ar
     image: nerdfoundry/rclonesync
     restart: unless-stopped
     env_file: .env
     environment:
-      - SYNC_DESTINATION=GDrive_argorena
+      - SYNC_DESTINATION=GDrive_ar
     volumes:
       - ./volumes/rclone:/config # needs to stay a directory
-      - ../GDrive_argorena:/data
+      - ../cloud-sync/GDrive_ar:/data
 
-  sync_db_jmgorena:
-    container_name: sync_db_jmgorena
+  sync_db_jm:
+    container_name: sync_db_jm
     image: nerdfoundry/rclonesync
     restart: unless-stopped
     env_file: .env
     environment:
-      - SYNC_DESTINATION=Dropbox_jmgorena
+      - SYNC_DESTINATION=Dropbox_jm
     volumes:
       - ./volumes/rclone:/config # needs to stay a directory
-      - ../Dropbox_jmgorena:/data
+      - ../cloud-sync/Dropbox_jm:/data
