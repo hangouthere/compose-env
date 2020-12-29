@@ -39,7 +39,7 @@ services:
       EULA: "TRUE"
       VERSION: "1.16.4"
       TYPE: "FORGE"
-      FORGEVERSION: "35.1.7"
+      FORGEVERSION: "35.1.13"
       MEMORY: "8G"
       USE_AIKAR_FLAGS: "true"
       # ENABLE_RCON: "true"
