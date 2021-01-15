@@ -1,6 +1,63 @@
 version: "3.5"
 
 services:
+
+  minecraft-router:
+    container_name: minecraft-router
+    image: itzg/mc-router
+    ports:
+      - 25565:25565
+    command: --mapping=dc-ed7b6af9d67e.nfgarmy.com.=minecraft-prim:25565,dc-aa2ae8691955.nfgarmy.com.=minecraft-bedrock-converted:25565
+
+  minecraft-rcon:
+    container_name: minecraft-rcon
+    image: itzg/rcon
+    env_file: .env
+    ports:
+      - "4326:4326"
+      - "4327:4327"
+    volumes:
+      - "./volumes/minecraft/rcon:/opt/rcon-web-admin/db"
+
+  minecraft-prim:
+    container_name: minecraft-prim
+    image: itzg/minecraft-server
+    restart: unless-stopped
+    env_file: .env
+    tty: true
+    stdin_open: true
+    restart: always
+    volumes:
+      - ./volumes/minecraft/java-primitive:/data
+    environment:
+      VERSION: "1.16.4"
+      MEMORY: "8G"
+      TYPE: "FORGE"
+      # Override server.properties
+      LEVEL_TYPE: "biomesoplenty"
+      MOTD: "\\u00A76NFG\\u00A7dArmy\\u00A76 Primitive\\u00A7r - \\u00A7burl.nfgarmy.com/discord\\u00A7r\\nVanilla MineCraft with a \\u00A7alittle bit extra!"
+      RCON_PASSWORD: ${MC_RCON_PASSWORD}
+      RCON_PORT: ${MC_RCON_PORT}
+
+  minecraft-bedrock-converted:
+    container_name: minecraft-bedrock-converted
+    image: itzg/minecraft-server
+    restart: unless-stopped
+    env_file: .env
+    tty: true
+    stdin_open: true
+    restart: always
+    volumes:
+      - ./volumes/minecraft/java-bedrockConverted:/data
+    environment:
+      VERSION: "1.16.4"
+      MEMORY: "4G"
+      TYPE: "FORGE"
+      # Override server.properties
+      MOTD: "\\u00A76NFG\\u00A7dArmy\\u00A76 Bedrock (Converted)\\u00A7r - \\u00A7burl.nfgarmy.com/discord \\u00A7rRemember the old xbox server?"
+      RCON_PASSWORD: ${MC_RCON_PASSWORD}
+      RCON_PORT: ${MC_RCON_PORT}
+
   # minecraft-bedrock:
   #   container_name: minecraft-bedrock
   #   image: itzg/minecraft-bedrock-server
@@ -9,7 +66,7 @@ services:
   #   tty: true
   #   stdin_open: true
   #   environment:
-  #     EULA: "TRUE"
+  #     EULA: "true"
   #     ALLOW_CHEATS: 'true'
   #     GAMEMODE: creative
   #     DIFFICULTY: normal
@@ -20,60 +77,4 @@ services:
   #   ports:
   #     - 19132:19132/udp
   #   volumes:
-  #     - mc-bedrock-volume:/data
-
-  minecraft-java:
-    container_name: minecraft-java
-    image: itzg/minecraft-server
-    restart: unless-stopped
-    env_file: .env
-    tty: true
-    stdin_open: true
-    restart: always
-    ports:
-      - "25565:25565"
-      - "28016:28016"
-    volumes:
-      - ./volumes/minecraft/java-vanilla++:/data
-    environment:
-      EULA: "TRUE"
-      VERSION: "1.16.4"
-      TYPE: "FORGE"
-      FORGEVERSION: "35.1.13"
-      MEMORY: "8G"
-      USE_AIKAR_FLAGS: "true"
-      # ENABLE_RCON: "true"
-      # RCON_PASSWORD: "testing"
-      # RCON_PORT: 9201
-
-  # rcon:
-  #   image: itzg/rcon
-  #   ports:
-  #     - "4326:4326"
-  #     - "4327:4327"
-  #   volumes:
-  #     - "rcon-volume:/opt/rcon-web-admin/db"
-
-  # geysermc:
-  #   container_name: geysermc
-  #   image: rveach/geyser-docker
-  #   restart: unless-stopped
-  #   env_file: .env
-  #   ports:
-  #     - 19133:19133/udp
-  #   volumes:
-  #     - "geyser-volume:/data"
-  #   environment:
-  #     BEDROCK_PORT: 19133
-  #     BEDROCK_MOTD1: "NFGArmy Crossplay Server"
-  #     BEDROCK_MOTD2: "What? Bedrock and Java Together?!?"
-
-# volumes:
-  # mc-java-volume:
-  #   external: true
-  # mc-bedrock-volume:
-  #   external: true
-  # geyser-volume:
-  #   external: true
-  # rcon-volume:
-  #   external: true
+  #     - ./volumes/minecraft/bedrock:/data
