@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo -e "$(date) ---\nPerforming Daily Live/Archived Backup" >> /var/log/mc_backups.log
+
+/opt/mc/backup_mc.sh true >> /var/log/mc_backups.log 2>&1

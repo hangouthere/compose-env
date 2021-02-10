@@ -2,21 +2,23 @@
 
 . "$(dirname $0)/_util.sh"
 
-# Checks if the world actually exists, and has a "live" backup
-verify_backups_exist() {
-    verify_server_exists
+: <<'NOTES'
 
-    # Verify the live backup for the world path exists
-    if [ ! -d $BACKUP_LIVE_PATH ]; then
-        echo "☠ Live Backup for \"$WORLD_NAME\" does not exist."
-        exit 98
-    fi
-}
 
-ensure_world_setup_complete() {
-    sh $SCRIPT_PATH/setup_mc_world.sh $WORLD_NAME
-}
 
-verify_backups_exist
-ensure_world_setup_complete
-docker-compose -f $ROOT_PATH/docker-compose.mc.yml up -d
+NOTES
+
+# Source the vaildation scripts
+. $SCRIPT_PATH/validate/init.sh
+
+# Exit Check
+exitVal=$?
+if [ "$exitVal" -ne 0 ]; then
+    echo -e "\n❌ Could not validate server files, so the server could not be started!"
+
+    exit $exitVal
+fi
+
+# Start the script provided by itzg/docker-minecraft-server
+echo -e "» Starting MC Server...\n\n---------------------------------------------------------\n\n"
+/start

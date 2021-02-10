@@ -39,8 +39,8 @@ services:
       # - DUCKDNSTOKEN=${TOKEN_DUCKDNS}
     volumes:
       - ./volumes/letsencrypt:/config
-      - ./volumes/minecraft/java-primitive/bluemap/web:/tmp/bluemap/play
-      - ./volumes/minecraft/java-bedrockConverted/bluemap/web:/tmp/bluemap/play2
+      - ./volumes/minecraft/minecraft-prim/bluemap/web:/tmp/bluemap/play
+      - ./volumes/minecraft/minecraft-bedrock-converted/bluemap/web:/tmp/bluemap/play2
     ports:
       - 80:80
       - 443:443

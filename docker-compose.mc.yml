@@ -27,10 +27,23 @@ services:
     env_file: .env
     tty: true
     stdin_open: true
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+    entrypoint: ['sh', '-c', 'crond && /opt/mc/start_mc.sh']
     volumes:
-      - ./volumes/minecraft/java-primitive:/data
+      - ./volumes/minecraft/minecraft-prim:/data
       - ./volumes/minecraft/forge-mods:/mods
       - ./volumes/minecraft/forge-mods:/data/config/bluemap/resourcepacks #Bluemap loads mods as resourcepacks for gfx
+
+      # Runtime Scripts/Crontabs
+      - ./scripts/mc/:/opt/mc:ro
+      - ./scripts/mc/crontabs:/etc/periodic:ro
+      # Backup Mounts
+      - ./volumes/minecraft/backups/minecraft-prim/live:/mc/live
+      - ./volumes/minecraft/backups/minecraft-prim/archived:/mc/archived
+      - /dev/shm/minecraft-prim:/mc/volatile
     environment:
       VERSION: '1.16.4'
       MEMORY: '6G'
@@ -38,20 +51,6 @@ services:
       # Override server.properties
       LEVEL_TYPE: 'biomesoplenty'
       MOTD: "\\u00A76NFG\\u00A7dArmy\\u00A76 Primitive\\u00A7r - \\u00A7burl.nfgarmy.com/discord\\u00A7r\\nVanilla MineCraft with a \\u00A7alittle bit extra!"
-
-  # minecraft-prim-backup:
-  #   container_name: minecraft-prim-backup
-  #   image: itzg/mc-backup
-  #   restart: unless-stopped
-  #   env_file: .env
-  #   environment:
-  #     BACKUP_INTERVAL: '24h'
-  #     RCON_HOST: 'minecraft-prim'
-  #     LINK_LATEST: 'true'
-  #     PRUNE_BACKUPS_DAYS: '2'
-  #   volumes:
-  #     - ./volumes/minecraft/java-primitive:/data:ro
-  #     - ./volumes/minecraft/backups/java-primitive:/backups
 
   # minecraft-bedrock-converted:
   #   container_name: minecraft-bedrock-converted
@@ -61,7 +60,7 @@ services:
   #   tty: true
   #   stdin_open: true
   #   volumes:
-  #     - ./volumes/minecraft/java-bedrockConverted:/data
+  #     - ./volumes/minecraft/minecraft-bedrock-converted:/data
   #     - ./volumes/minecraft/forge-mods:/mods
   #   environment:
   #     VERSION: '1.16.4'

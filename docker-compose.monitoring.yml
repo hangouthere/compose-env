@@ -19,7 +19,7 @@
 #   influxdb /init-influxdb.sh
 ##############################################################################
 
-version: "3.5"
+version: '3.5'
 
 services:
   grafana:
@@ -42,6 +42,9 @@ services:
       - 8086:8086
     volumes:
       - influxdb-volume:/var/lib/influxdb
+    # Disable logging, because it writes a TON to disk
+    logging:
+      driver: none
   telegraf:
     image: telegraf
     container_name: telegraf
