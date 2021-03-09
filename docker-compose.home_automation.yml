@@ -1,4 +1,4 @@
-version: "3.5"
+version: '3.5'
 
 services:
   home-assistant:
@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
     env_file: .env
     ports:
-      - "8123:8123"
+      - '8123:8123'
     volumes:
       - ./volumes/ha:/config
     devices:
@@ -19,8 +19,8 @@ services:
     restart: unless-stopped
     env_file: .env
     ports:
-      - "8766:8081"
-      - "8765:8765"
+      - '8766:8081'
+      - '8765:8765'
     volumes:
       - ./volumes/motioneye/etc:/etc/motioneye
       - ./volumes/motioneye/var_lib:/var/lib/motioneye

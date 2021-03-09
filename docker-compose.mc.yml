@@ -46,7 +46,7 @@ services:
       - /dev/shm/minecraft-prim:/mc/volatile
     environment:
       VERSION: '1.16.4'
-      MEMORY: '6G'
+      MEMORY: '8G'
       TYPE: 'FORGE'
       # Override server.properties
       LEVEL_TYPE: 'biomesoplenty'

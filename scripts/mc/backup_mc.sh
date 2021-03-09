@@ -42,7 +42,7 @@ perform_live_backup() {
 
 # Archive from the Live Path
 perform_archived_backup() {
-    ts=$(date -u +"%Y.%m.%d-%H.%M.%S")
+    ts=$(date +"%Y.%m.%d-%H.%M.%S")
     archiveFilename="$ts.tar.gz"
 
     echo "» Doing Archived Backup..."

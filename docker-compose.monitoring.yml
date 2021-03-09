@@ -1,52 +1,21 @@
-# Prefix:
-# A lot of this came from here: https://towardsdatascience.com/get-system-metrics-for-5-min-with-docker-telegraf-influxdb-and-grafana-97cfd957f0ac
-# And the telegraf info from here: https://www.jacobtomlinson.co.uk/monitoring/2016/06/23/running-telegraf-inside-a-container/
 ##############################################################################
-# Create base network and volumes for setup commands
-
-# docker network create monitoring
-# docker volume create grafana-volume
-# docker volume create influxdb-volume
-
-# Then set up influx with an admin and user. Feel free to change info!
-
-# docker run --rm \
-#   -e INFLUXDB_DB=telegraf -e INFLUXDB_ADMIN_ENABLED=true \
-#   -e INFLUXDB_ADMIN_USER=admin \
-#   -e INFLUXDB_ADMIN_PASSWORD=supersecretpassword \
-#   -e INFLUXDB_USER=telegraf -e INFLUXDB_USER_PASSWORD=secretpassword \
-#   -v influxdb-volume:/var/lib/influxdb \
-#   influxdb /init-influxdb.sh
+# Setup Instructions: https://docs.influxdata.com/influxdb/v2.0/tools/grafana/
+#
+# Gist: set up telegraf to push to influxdb2, set up influxdb2 bucket as well as v1 auth/dbrp, use v1 auth in Grafana
+#
+# InfluxDB v1 DBRP Creds: grafana/secretpassword
+#
+# Dashboards:
+# - Linux: https://grafana.com/grafana/dashboards/928
+# - Windows: https://grafana.com/grafana/dashboards/1902
+#
 ##############################################################################
 
 version: '3.5'
 
 services:
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    restart: unless-stopped
-    env_file: .env
-    ports:
-      - 3000:3000
-    environment:
-      - GF_SECURITY_ALLOW_EMBEDDING=true
-    volumes:
-      - grafana-volume:/var/lib/grafana
-  influxdb:
-    image: influxdb
-    container_name: influxdb
-    restart: unless-stopped
-    env_file: .env
-    ports:
-      - 8086:8086
-    volumes:
-      - influxdb-volume:/var/lib/influxdb
-    # Disable logging, because it writes a TON to disk
-    logging:
-      driver: none
   telegraf:
-    image: telegraf
+    image: telegraf:1.17-alpine
     container_name: telegraf
     restart: unless-stopped
     env_file: .env
@@ -63,6 +32,31 @@ services:
       - /sys:/rootfs/sys:ro
       - /proc:/rootfs/proc:ro
       - /etc:/rootfs/etc:ro
+  influxdb:
+    image: influxdb:2.0-alpine
+    container_name: influxdb
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - 8086:8086
+    volumes:
+      - ./volumes/influxdb/lib:/var/lib/influxdb2
+      - ./volumes/influxdb/etc:/etc/influxdb2
+    # Disable logging, because it writes a TON to disk
+    # logging:
+    #   driver: none
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+    volumes:
+      - ./volumes/grafana:/var/lib/grafana
+
   # chronograf:
   #  image: chronograf
   #  container_name: chronograf
@@ -75,10 +69,15 @@ services:
   #  environment:
   #    INFLUXDB_URL: http://influxdb:8086
 
-volumes:
-  # chronograf-volume:
-  #  name: chronograf-volume
-  grafana-volume:
-    external: true
-  influxdb-volume:
-    external: true
+  # glances:
+  #   image: nicolargo/glances
+  #   container_name: glances
+  #   restart: unless-stopped
+  #   pid: 'host'
+  #   ports:
+  #     - '61208:61208'
+  #   environment:
+  #     GLANCES_OPT: '-w'
+  #   volumes:
+  #     - '/var/run/docker.sock:/var/run/docker.sock:ro'
+  #     - './volumes/glances.conf:/glances/conf/glances.conf'
