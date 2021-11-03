@@ -1,5 +1,8 @@
 version: '3.5'
 
+# TODO:  Need to do a FULL backup of all this crap :S
+# - Be sure to get site configs, extra fail2ban setup stuff (instaban and jail config, as well as iptables remote stuff i made)
+
 services:
   mariadb:
     container_name: mariadb
@@ -22,7 +25,7 @@ services:
 
   letsencrypt:
     container_name: letsencrypt
-    image: linuxserver/letsencrypt
+    image: linuxserver/swag
     restart: unless-stopped
     env_file: .env
     cap_add:
@@ -37,10 +40,11 @@ services:
       # - URL=${URL_DUCKDNS}
       # - VALIDATION=duckdns
       # - DUCKDNSTOKEN=${TOKEN_DUCKDNS}
+      - DOCKER_MODS=linuxserver/mods:swag-cloudflare-real-ip
     volumes:
       - ./volumes/letsencrypt:/config
-      - ./volumes/minecraft/minecraft-prim/bluemap/web:/tmp/bluemap/play
-      - ./volumes/minecraft/minecraft-bedrock-converted/bluemap/web:/tmp/bluemap/play2
+        #- ./volumes/minecraft/minecraft-prim/bluemap/web:/tmp/bluemap/play
+        #- ./volumes/minecraft/minecraft-bedrock-converted/bluemap/web:/tmp/bluemap/play2
     ports:
       - 80:80
       - 443:443

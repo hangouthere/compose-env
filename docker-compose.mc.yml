@@ -7,7 +7,8 @@ services:
     restart: unless-stopped
     ports:
       - 25565:25565
-    command: --mapping=dc-ed7b6af9d67e.nfgarmy.com.=minecraft-prim:25565,dc-aa2ae8691955.nfgarmy.com.=minecraft-bedrock-converted:25565
+    command: --mapping=nfgarmy.local=minecraft-prim:25565,dc-ed7b6af9d67e.nfgarmy.com.=minecraft-prim:25565
+    # command: --mapping=nfgarmy.local=minecraft-prim:25565,dc-ed7b6af9d67e.nfgarmy.com.=minecraft-prim:25565,dc-aa2ae8691955.nfgarmy.com.=minecraft-hp:25565
 
   minecraft-rcon:
     container_name: minecraft-rcon
@@ -27,23 +28,18 @@ services:
     env_file: .env
     tty: true
     stdin_open: true
-    deploy:
-      resources:
-        limits:
-          cpus: '4'
-    entrypoint: ['sh', '-c', 'crond && /opt/mc/start_mc.sh']
+    # entrypoint: ['sh', '-c', 'crond && /opt/mc/start_mc.sh']
     volumes:
       - ./volumes/minecraft/minecraft-prim:/data
       - ./volumes/minecraft/forge-mods:/mods
       - ./volumes/minecraft/forge-mods:/data/config/bluemap/resourcepacks #Bluemap loads mods as resourcepacks for gfx
-
-      # Runtime Scripts/Crontabs
-      - ./scripts/mc/:/opt/mc:ro
-      - ./scripts/mc/crontabs:/etc/periodic:ro
-      # Backup Mounts
-      - ./volumes/minecraft/backups/minecraft-prim/live:/mc/live
-      - ./volumes/minecraft/backups/minecraft-prim/archived:/mc/archived
-      - /dev/shm/minecraft-prim:/mc/volatile
+    # # Runtime Scripts/Crontabs
+    # - ./scripts/mc/:/opt/mc:ro
+    # - ./scripts/mc/crontabs:/etc/periodic:ro
+    # # Backup Mounts
+    # - ./volumes/minecraft/backups/minecraft-prim/live:/mc/live
+    # - ./volumes/minecraft/backups/minecraft-prim/archived:/mc/archived
+    # - /dev/shm/minecraft-prim:/mc/volatile
     environment:
       VERSION: '1.16.4'
       MEMORY: '8G'
@@ -51,6 +47,27 @@ services:
       # Override server.properties
       LEVEL_TYPE: 'biomesoplenty'
       MOTD: "\\u00A76NFG\\u00A7dArmy\\u00A76 Primitive\\u00A7r - \\u00A7burl.nfgarmy.com/discord\\u00A7r\\nVanilla MineCraft with a \\u00A7alittle bit extra!"
+      SPAWN_PROTECTION: 1
+      RESOURCE_PACK: 'https://www.nfgarmy.com/mc/nfgff_respak.zip'
+
+      # minecraft-cc:
+      #   container_name: minecraft-cc
+      #   image: itzg/minecraft-server:java8
+      #   restart: unless-stopped
+      #   env_file: .env
+      #   tty: true
+      #   stdin_open: true
+      #   volumes:
+      #     - ./volumes/minecraft/minecraft-cc:/data
+      #     - ./volumes/minecraft/forge-mods-cc:/mods
+      #     - ./volumes/minecraft/forge-mods-cc:/data/config/bluemap/resourcepacks #Bluemap loads mods as resourcepacks for gfx
+      #   environment:
+      #     VERSION: '1.16.5'
+      #     FORGEVERSION: '36.1.24'
+      #     MEMORY: '6G'
+      #     TYPE: 'FORGE'
+      #     # Override server.properties
+      #     MOTD: "\\u00A76NFG \\u00A7cStaff\\u00A7b Content Creation\\u00A7f Server"
 
   # minecraft-bedrock-converted:
   #   container_name: minecraft-bedrock-converted
