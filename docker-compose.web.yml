@@ -48,3 +48,13 @@ services:
     ports:
       - 80:80
       - 443:443
+
+  bitwarden:
+    container_name: bitwarden
+    image: vaultwarden/server:alpine
+    restart: unless-stopped
+    env_file: .env
+    # ports:
+    # - 80:80 # Rely on internal docker routing
+    volumes:
+      - ./volumes/vaultwarden:/data
