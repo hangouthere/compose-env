@@ -58,3 +58,17 @@ services:
     # - 80:80 # Rely on internal docker routing
     volumes:
       - ./volumes/vaultwarden:/data
+
+  dealbot:
+    container_name: dealbot
+    image: nerdfoundry/dealbot:latest
+    restart: unless-stopped
+    tty: true
+    env_file: .env
+    environment:
+      # Import every 2min instead of default 5min
+      # - CRONTAB_PATTERN_IMPORT=*/2 * * * *
+      - LOG_LEVEL=TRACE
+    volumes:
+      - './volumes/dealbot/junction:/app/junction'
+      - './volumes/dealbot/db:/app/db'
