@@ -1,5 +1,0 @@
-#!/bin/sh
-
-echo -e "$(date) ---\nPerforming 15min Live Backup" >> /var/log/mc_backups.log
-
-/opt/mc/backup_mc.sh >> /var/log/mc_backups.log 2>&1

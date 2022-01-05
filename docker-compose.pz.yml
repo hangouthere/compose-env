@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+  project-zomboid:
+    image: afey/zomboid
+    container_name: zomboid
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      SERVER_NAME: pzserver
+      SERVER_PASSWORD: ${PZ_SERVER_PASSWORD}
+      ADMIN_PASSWORD: ${PZ_ADMIN_PASSWORD}
+      SERVER_PUBLIC_NAME: Nerdzoid
+      SERVER_PUBLIC_DESC: 'Just a bunch of Nerds hanging out, trying to survive! See the Discord to join up: http://url.nfgarmy.com/discord'
+      # Override from .env
+      RCON_PORT: 27015
+    ports:
+      - '8766:8766/udp'
+      - '8767:8767/udp'
+      - '16261:16261/udp'
+      - '16262-16272:16262-16272'
+      - '27015:27015'
+    volumes:
+      - ./volumes/project-zomboid:/server-data
+      - pz-server-files:/server-files
+
+volumes:
+  pz-server-files:

@@ -1,5 +1,0 @@
-*.jar
-cache
-logs
-bluemap
-.forge*
