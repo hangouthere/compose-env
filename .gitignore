@@ -1,4 +1,6 @@
 dockerfiles/
 volumes/
 
+scripts
+envs-enabled
 .env

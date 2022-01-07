@@ -10,7 +10,7 @@ services:
     restart: unless-stopped
     env_file: .env
     volumes:
-      - ./volumes/mariadb:/config
+      - ../volumes/mariadb:/config
     ports:
       - 3306:3306
 
@@ -42,9 +42,9 @@ services:
       # - DUCKDNSTOKEN=${TOKEN_DUCKDNS}
       - DOCKER_MODS=linuxserver/mods:swag-cloudflare-real-ip
     volumes:
-      - ./volumes/letsencrypt:/config
-        #- ./volumes/minecraft/minecraft-prim/bluemap/web:/tmp/bluemap/play
-        #- ./volumes/minecraft/minecraft-bedrock-converted/bluemap/web:/tmp/bluemap/play2
+      - ../volumes/letsencrypt:/config
+        #- ../volumes/minecraft/minecraft-prim/bluemap/web:/tmp/bluemap/play
+        #- ../volumes/minecraft/minecraft-bedrock-converted/bluemap/web:/tmp/bluemap/play2
     ports:
       - 80:80
       - 443:443
@@ -57,7 +57,7 @@ services:
     # ports:
     # - 80:80 # Rely on internal docker routing
     volumes:
-      - ./volumes/vaultwarden:/data
+      - ../volumes/vaultwarden:/data
 
   dealbot:
     container_name: dealbot
@@ -70,5 +70,5 @@ services:
       # - CRONTAB_PATTERN_IMPORT=*/2 * * * *
       - LOG_LEVEL=TRACE
     volumes:
-      - './volumes/dealbot/junction:/app/junction'
-      - './volumes/dealbot/db:/app/db'
+      - '../volumes/dealbot/junction:/app/junction'
+      - '../volumes/dealbot/db:/app/db'

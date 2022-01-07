@@ -9,7 +9,7 @@ services:
     environment:
       - SYNC_DESTINATION=GDrive_nerdfoundry
     volumes:
-      - ./volumes/rclone:/config # needs to stay a directory
+      - ../volumes/rclone:/config # needs to stay a directory
       - ../cloud-sync/GDrive_nerdfoundry:/data
 
   sync_gdrive_tg:
@@ -20,7 +20,7 @@ services:
     environment:
       - SYNC_DESTINATION=GDrive_tg
     volumes:
-      - ./volumes/rclone:/config # needs to stay a directory
+      - ../volumes/rclone:/config # needs to stay a directory
       - ../cloud-sync/GDrive_tg:/data
 
   sync_gdrive_jm:
@@ -31,7 +31,7 @@ services:
     environment:
       - SYNC_DESTINATION=GDrive_jm
     volumes:
-      - ./volumes/rclone:/config # needs to stay a directory
+      - ../volumes/rclone:/config # needs to stay a directory
       - ../cloud-sync/GDrive_jm:/data
 
   sync_gdrive_ar:
@@ -42,7 +42,7 @@ services:
     environment:
       - SYNC_DESTINATION=GDrive_ar
     volumes:
-      - ./volumes/rclone:/config # needs to stay a directory
+      - ../volumes/rclone:/config # needs to stay a directory
       - ../cloud-sync/GDrive_ar:/data
 
   sync_db_jm:
@@ -53,5 +53,5 @@ services:
     environment:
       - SYNC_DESTINATION=Dropbox_jm
     volumes:
-      - ./volumes/rclone:/config # needs to stay a directory
+      - ../volumes/rclone:/config # needs to stay a directory
       - ../cloud-sync/Dropbox_jm:/data

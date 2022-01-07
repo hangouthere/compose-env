@@ -27,7 +27,7 @@ services:
       HOST_SYS: /rootfs/sys
       HOST_ETC: /rootfs/etc
     volumes:
-      - ./volumes/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - ../volumes/telegraf.conf:/etc/telegraf/telegraf.conf:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /sys:/rootfs/sys:ro
       - /proc:/rootfs/proc:ro
@@ -40,8 +40,8 @@ services:
     ports:
       - 8086:8086
     volumes:
-      - ./volumes/influxdb/lib:/var/lib/influxdb2
-      - ./volumes/influxdb/etc:/etc/influxdb2
+      - ../volumes/influxdb/lib:/var/lib/influxdb2
+      - ../volumes/influxdb/etc:/etc/influxdb2
     # Disable logging, because it writes a TON to disk
     # logging:
     #   driver: none
@@ -55,7 +55,7 @@ services:
     environment:
       - GF_SECURITY_ALLOW_EMBEDDING=true
     volumes:
-      - ./volumes/grafana:/var/lib/grafana
+      - ../volumes/grafana:/var/lib/grafana
 
   # chronograf:
   #  image: chronograf
@@ -80,4 +80,4 @@ services:
   #     GLANCES_OPT: '-w'
   #   volumes:
   #     - '/var/run/docker.sock:/var/run/docker.sock:ro'
-  #     - './volumes/glances.conf:/glances/conf/glances.conf'
+  #     - '../volumes/glances.conf:/glances/conf/glances.conf'

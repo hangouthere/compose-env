@@ -21,7 +21,7 @@ services:
       - '16262-16272:16262-16272'
       - '27015:27015'
     volumes:
-      - ./volumes/project-zomboid:/server-data
+      - ../volumes/project-zomboid:/server-data
       - pz-server-files:/server-files
 
 volumes:

@@ -10,14 +10,14 @@ services:
     entrypoint: ['sh', '-c', 'crond && /opt/mc/start_mc.sh']
     # entrypoint: tail -f /dev/null
     volumes:
-      - ./volumes/minecraft/minecraft-test:/data
-      - ./volumes/minecraft/forge-mods:/mods
-      - ./volumes/minecraft/forge-mods:/data/config/bluemap/resourcepacks #Bluemap loads mods as resourcepacks for gfx
+      - ../volumes/minecraft/minecraft-test:/data
+      - ../volumes/minecraft/forge-mods:/mods
+      - ../volumes/minecraft/forge-mods:/data/config/bluemap/resourcepacks #Bluemap loads mods as resourcepacks for gfx
       # Backup Mounts
       - ./scripts/mc/:/opt/mc:ro
       - ./scripts/mc/crontabs:/etc/periodic
-      - ./volumes/minecraft/backups/minecraft-test/live:/mc/live
-      - ./volumes/minecraft/backups/minecraft-test/archived:/mc/archived
+      - ../volumes/minecraft/backups/minecraft-test/live:/mc/live
+      - ../volumes/minecraft/backups/minecraft-test/archived:/mc/archived
       - /dev/shm/minecraft-test:/mc/volatile
     environment:
       VERSION: '1.16.4'
