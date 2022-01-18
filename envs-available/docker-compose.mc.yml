@@ -14,7 +14,9 @@ services:
     container_name: minecraft-rcon
     image: itzg/rcon
     restart: unless-stopped
-    env_file: .env
+    env_file: 
+      - .env/.env
+      - .env/.env-mc
     ports:
       - '4326:4326'
       - '4327:4327'
@@ -25,7 +27,9 @@ services:
     container_name: minecraft-prim
     image: itzg/minecraft-server
     restart: unless-stopped
-    env_file: .env
+    env_file: 
+      - .env/.env
+      - .env/.env-mc
     tty: true
     stdin_open: true
     # entrypoint: ['sh', '-c', 'crond && /opt/mc/start_mc.sh']
@@ -54,7 +58,9 @@ services:
       #   container_name: minecraft-cc
       #   image: itzg/minecraft-server:java8
       #   restart: unless-stopped
-      #   env_file: .env
+  #       env_file: 
+      - .env/.env
+      - .env/.env-mc
       #   tty: true
       #   stdin_open: true
       #   volumes:
@@ -73,7 +79,9 @@ services:
   #   container_name: minecraft-bedrock-converted
   #   image: itzg/minecraft-server
   #   restart: unless-stopped
-  #   env_file: .env
+#       env_file: 
+      - .env/.env
+      - .env/.env-mc
   #   tty: true
   #   stdin_open: true
   #   volumes:
@@ -90,7 +98,9 @@ services:
   #   container_name: minecraft-bedrock
   #   image: itzg/minecraft-bedrock-server
   #   restart: unless-stopped
-  #   env_file: .env
+#       env_file: 
+      - .env/.env
+      - .env/.env-mc
   #   tty: true
   #   stdin_open: true
   #   environment:

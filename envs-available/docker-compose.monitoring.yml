@@ -1,13 +1,8 @@
 ##############################################################################
-# Setup Instructions: https://docs.influxdata.com/influxdb/v2.0/tools/grafana/
-#
-# Gist: set up telegraf to push to influxdb2, set up influxdb2 bucket as well as v1 auth/dbrp, use v1 auth in Grafana
-#
-# InfluxDB v1 DBRP Creds: grafana/secretpassword
-#
-# Dashboards:
+# Grafana Dashboards:
 # - Linux: https://grafana.com/grafana/dashboards/928
 # - Windows: https://grafana.com/grafana/dashboards/1902
+# - Docker: https://grafana.com/grafana/dashboards/????
 #
 ##############################################################################
 
@@ -15,28 +10,27 @@ version: '3.5'
 
 services:
   telegraf:
-    image: telegraf:1.17-alpine
+    image: telegraf:1.21-alpine
     container_name: telegraf
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - .env/.env-monitoring
+      - .env/.env
     hostname: nfgarmy
-    cap_add:
-      - SYS_PTRACE
-    environment:
-      HOST_PROC: /rootfs/proc
-      HOST_SYS: /rootfs/sys
-      HOST_ETC: /rootfs/etc
+    user: telegraf:999
     volumes:
-      - ../volumes/telegraf.conf:/etc/telegraf/telegraf.conf:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/run/docker.sock:/var/run/docker.sock
       - /sys:/rootfs/sys:ro
       - /proc:/rootfs/proc:ro
       - /etc:/rootfs/etc:ro
   influxdb:
-    image: influxdb:2.0-alpine
+    image: influxdb:2.1-alpine
     container_name: influxdb
+    hostname: influxdb
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - .env/.env
+      - .env/.env-monitoring
     ports:
       - 8086:8086
     volumes:
@@ -49,35 +43,10 @@ services:
     image: grafana/grafana
     container_name: grafana
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - .env/.env
+      - .env/.env-monitoring
     ports:
       - 3000:3000
-    environment:
-      - GF_SECURITY_ALLOW_EMBEDDING=true
     volumes:
       - ../volumes/grafana:/var/lib/grafana
-
-  # chronograf:
-  #  image: chronograf
-  #  container_name: chronograf
-  #  restart: unless-stopped
-  #  env_file: .env
-  #  ports:
-  #    - 8888:8888
-  #  volumes:
-  #    - chronograf-volume:/var/lib/chronograf
-  #  environment:
-  #    INFLUXDB_URL: http://influxdb:8086
-
-  # glances:
-  #   image: nicolargo/glances
-  #   container_name: glances
-  #   restart: unless-stopped
-  #   pid: 'host'
-  #   ports:
-  #     - '61208:61208'
-  #   environment:
-  #     GLANCES_OPT: '-w'
-  #   volumes:
-  #     - '/var/run/docker.sock:/var/run/docker.sock:ro'
-  #     - '../volumes/glances.conf:/glances/conf/glances.conf'

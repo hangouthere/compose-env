@@ -5,7 +5,9 @@ services:
     container_name: sync_gdrive_nerdfoundry
     image: nerdfoundry/rclonesync
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - .env/.env
+      - .env/.env-cloud
     environment:
       - SYNC_DESTINATION=GDrive_nerdfoundry
     volumes:
@@ -16,7 +18,9 @@ services:
     container_name: sync_gdrive_tg
     image: nerdfoundry/rclonesync
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - .env/.env
+      - .env/.env-cloud
     environment:
       - SYNC_DESTINATION=GDrive_tg
     volumes:
@@ -27,7 +31,9 @@ services:
     container_name: sync_gdrive_jm
     image: nerdfoundry/rclonesync
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - .env/.env
+      - .env/.env-cloud
     environment:
       - SYNC_DESTINATION=GDrive_jm
     volumes:
@@ -38,7 +44,9 @@ services:
     container_name: sync_gdrive_ar
     image: nerdfoundry/rclonesync
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - .env/.env
+      - .env/.env-cloud
     environment:
       - SYNC_DESTINATION=GDrive_ar
     volumes:
@@ -49,7 +57,9 @@ services:
     container_name: sync_db_jm
     image: nerdfoundry/rclonesync
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - .env/.env
+      - .env/.env-cloud
     environment:
       - SYNC_DESTINATION=Dropbox_jm
     volumes:

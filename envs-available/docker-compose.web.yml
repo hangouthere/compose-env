@@ -8,7 +8,9 @@ services:
     container_name: mariadb
     image: linuxserver/mariadb
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - .env/.env
+      - .env/.env-web
     volumes:
       - ../volumes/mariadb:/config
     ports:
@@ -17,7 +19,9 @@ services:
   # phpmyadmin:
   #   container_name: phpmyadmin
   #   image: phpmyadmin/phpmyadmin
-  #   env_file: .env
+  #   env_file:
+  #     - .env/.env
+  #     - .env/.env-web
   #   ports:
   #     - 8080:80
   #   external_links:
@@ -27,20 +31,11 @@ services:
     container_name: letsencrypt
     image: linuxserver/swag
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - .env/.env
+      - .env/.env-web
     cap_add:
       - NET_ADMIN
-    environment:
-      # - STAGING=true
-      - URL=${URL_NFGARMY}
-      - SUBDOMAINS=wildcard
-      - VALIDATION=dns
-      - DNSPLUGIN=cloudflare
-      ########
-      # - URL=${URL_DUCKDNS}
-      # - VALIDATION=duckdns
-      # - DUCKDNSTOKEN=${TOKEN_DUCKDNS}
-      - DOCKER_MODS=linuxserver/mods:swag-cloudflare-real-ip
     volumes:
       - ../volumes/letsencrypt:/config
         #- ../volumes/minecraft/minecraft-prim/bluemap/web:/tmp/bluemap/play
@@ -53,9 +48,9 @@ services:
     container_name: bitwarden
     image: vaultwarden/server:alpine
     restart: unless-stopped
-    env_file: .env
-    # ports:
-    # - 80:80 # Rely on internal docker routing
+    env_file:
+      - .env/.env
+      - .env/.env-web
     volumes:
       - ../volumes/vaultwarden:/data
 
@@ -64,7 +59,9 @@ services:
     image: nerdfoundry/dealbot:latest
     restart: unless-stopped
     tty: true
-    env_file: .env
+    env_file:
+      - .env/.env
+      - .env/.env-web
     environment:
       # Import every 2min instead of default 5min
       # - CRONTAB_PATTERN_IMPORT=*/2 * * * *

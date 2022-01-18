@@ -7,7 +7,9 @@ services:
     restart: unless-stopped
     tty: true
     stop_signal: SIGINT
-    env_file: .env
+    env_file:
+      - .env/.env
+      - .env/.env-home-automation
     devices:
       - /dev/serial/by-id/usb-0658_0200-if00:/dev/zwave
     volumes:
@@ -19,7 +21,9 @@ services:
     container_name: home-assistant
     image: homeassistant/home-assistant:stable
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - .env/.env
+      - .env/.env-home-automation
     ports:
       - '8123:8123'
     volumes:
@@ -31,20 +35,12 @@ services:
     container_name: motioneye
     image: ccrisan/motioneye:master-amd64
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - .env/.env
+      - .env/.env-home-automation
     ports:
       - '8766:8081'
       - '8765:8765'
     volumes:
       - ../volumes/motioneye/etc:/etc/motioneye
       - ../volumes/motioneye/var_lib:/var/lib/motioneye
-
-  # node-red:
-  #   container_name: node-red
-  #   image: nodered/node-red:latest
-  #   restart: unless-stopped
-  #   env_file: .env
-  #   ports:
-  #     - "1880:1880"
-  #   volumes:
-  #     - ../volumes/node-red:/data

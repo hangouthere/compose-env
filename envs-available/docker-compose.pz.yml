@@ -5,15 +5,9 @@ services:
     image: afey/zomboid
     container_name: zomboid
     restart: unless-stopped
-    env_file: .env
-    environment:
-      SERVER_NAME: pzserver
-      SERVER_PASSWORD: ${PZ_SERVER_PASSWORD}
-      ADMIN_PASSWORD: ${PZ_ADMIN_PASSWORD}
-      SERVER_PUBLIC_NAME: Nerdzoid
-      SERVER_PUBLIC_DESC: 'Just a bunch of Nerds hanging out, trying to survive! See the Discord to join up: http://url.nfgarmy.com/discord'
-      # Override from .env
-      RCON_PORT: 27015
+    env_file: 
+      - .env/.env
+      - .env/.env-pz
     ports:
       - '8766:8766/udp'
       - '8767:8767/udp'

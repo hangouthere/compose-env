@@ -5,7 +5,9 @@ services:
     container_name: sync_gdrive_nerdfoundry
     image: nerdfoundry/rclonesync
     restart: unless-stopped
-    env_file: .env
+    env_file: 
+      - .env/.env
+      - .env/.env-cloud
     environment:
       - SYNC_DESTINATION=GDrive_nerdfoundry
     volumes:
