@@ -1,22 +1,23 @@
 version: '3.7'
 
 services:
-  project-zomboid:
-    image: afey/zomboid
+  lgsm-pzserver:
+    image: nerdfoundry/lgsm-pzserver
     container_name: zomboid
     restart: unless-stopped
-    env_file: 
-      - .env/.env
-      - .env/.env-pz
+    stdin_open: true
+    tty: true
     ports:
-      - '8766:8766/udp'
-      - '8767:8767/udp'
-      - '16261:16261/udp'
-      - '16262-16272:16262-16272'
+      - '8766-8767:8766-8767/udp'
+      - '16261-16278:16261-16278/udp'
       - '27015:27015'
     volumes:
-      - ../volumes/project-zomboid:/server-data
-      - pz-server-files:/server-files
+      # Caches home dir, including lgsm/steamcmd/etc
+      - lgsm-cache:/home/linuxgsm
+      # Caches Zomboid Server Install (settings, world) for easy backups
+      - ../volumes/project-zomboid/server-files:/home/linuxgsm/Zomboid
+      # LGSM Configuration
+      - ../volumes/project-zomboid/config-lgsm:/home/linuxgsm/lgsm/config-lgsm/pzserver
 
 volumes:
-  pz-server-files:
+  lgsm-cache:
