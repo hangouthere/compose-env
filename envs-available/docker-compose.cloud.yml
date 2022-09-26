@@ -1,67 +1,64 @@
 version: '3.5'
 
+x-rclone-bisync: &rclone-bisync
+  image: nerdfoundry/rclone-bisync
+  restart: unless-stopped
+  env_file:
+    - .env/.env
+    - .env/.env-cloud
+
 services:
   sync_gdrive_nerdfoundry:
+    <<: *rclone-bisync
     container_name: sync_gdrive_nerdfoundry
-    image: nerdfoundry/rclonesync
-    restart: unless-stopped
-    env_file:
-      - .env/.env
-      - .env/.env-cloud
     environment:
-      - SYNC_DESTINATION=GDrive_nerdfoundry
+      - RCLONE_SYNC_LABEL=GDrive_nerdfoundry
     volumes:
       - ../volumes/rclone:/config # needs to stay a directory
       - ../../cloud-sync/GDrive_nerdfoundry:/data
 
   sync_gdrive_tg:
+    <<: *rclone-bisync
     container_name: sync_gdrive_tg
-    image: nerdfoundry/rclonesync
-    restart: unless-stopped
-    env_file:
-      - .env/.env
-      - .env/.env-cloud
     environment:
-      - SYNC_DESTINATION=GDrive_tg
+      - RCLONE_SYNC_LABEL=GDrive_tg
     volumes:
       - ../volumes/rclone:/config # needs to stay a directory
       - ../../cloud-sync/GDrive_tg:/data
 
   sync_gdrive_jm:
+    <<: *rclone-bisync
     container_name: sync_gdrive_jm
-    image: nerdfoundry/rclonesync
-    restart: unless-stopped
-    env_file:
-      - .env/.env
-      - .env/.env-cloud
     environment:
-      - SYNC_DESTINATION=GDrive_jm
+      - RCLONE_SYNC_LABEL=GDrive_jm
     volumes:
       - ../volumes/rclone:/config # needs to stay a directory
-      - ../../cloud-sync/GDrive_jm:/data
+      - ../../cloud-sync/GDrive_jg:/data
 
   sync_gdrive_ar:
+    <<: *rclone-bisync
     container_name: sync_gdrive_ar
-    image: nerdfoundry/rclonesync
-    restart: unless-stopped
-    env_file:
-      - .env/.env
-      - .env/.env-cloud
     environment:
-      - SYNC_DESTINATION=GDrive_ar
+      - RCLONE_SYNC_LABEL=GDrive_ar
     volumes:
       - ../volumes/rclone:/config # needs to stay a directory
       - ../../cloud-sync/GDrive_ar:/data
 
   sync_db_jm:
+    <<: *rclone-bisync
     container_name: sync_db_jm
-    image: nerdfoundry/rclonesync
-    restart: unless-stopped
-    env_file:
-      - .env/.env
-      - .env/.env-cloud
     environment:
-      - SYNC_DESTINATION=Dropbox_jm
+      - RCLONE_SYNC_LABEL=Dropbox_jm
     volumes:
       - ../volumes/rclone:/config # needs to stay a directory
       - ../../cloud-sync/Dropbox_jm:/data
+
+  sync_gdrive_ohn:
+    <<: *rclone-bisync
+    container_name: sync_gdrive_ohn
+    environment:
+      - RCLONE_SYNC_LABEL=GDrive_ohn
+    volumes:
+      - ../volumes/rclone:/config # needs to stay a directory
+      - ../../cloud-sync/GDrive_ohn:/data
+

@@ -3,13 +3,13 @@ version: '3.5'
 services:
   sync_gdrive_nerdfoundry:
     container_name: sync_gdrive_nerdfoundry
-    image: nerdfoundry/rclonesync
+    image: nerdfoundry/rclone-bisync
     restart: unless-stopped
-    env_file: 
+    env_file:
       - .env/.env
       - .env/.env-cloud
     environment:
-      - SYNC_DESTINATION=GDrive_nerdfoundry
+      - RCLONE_SYNC_LABEL=GDrive_nerdfoundry
     volumes:
       - ../volumes/rclone:/config # needs to stay a directory
       - ../../cloud-sync/GDrive_nerdfoundry:/data

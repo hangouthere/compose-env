@@ -6,7 +6,7 @@ version: '3.5'
 services:
   mariadb:
     container_name: mariadb
-    image: linuxserver/mariadb
+    image: lscr.io/linuxserver/mariadb:latest
     restart: unless-stopped
     env_file:
       - .env/.env
@@ -16,20 +16,20 @@ services:
     ports:
       - 3306:3306
 
-  # phpmyadmin:
-  #   container_name: phpmyadmin
-  #   image: phpmyadmin/phpmyadmin
-  #   env_file:
-  #     - .env/.env
-  #     - .env/.env-web
-  #   ports:
-  #     - 8080:80
-  #   external_links:
-  #     - mariadb:db
+        #phpmyadmin:
+        #  container_name: phpmyadmin
+        #  image: phpmyadmin/phpmyadmin
+        #  env_file:
+        #    - .env/.env
+        #    - .env/.env-web
+        #  ports:
+        #    - 8080:80
+        #  external_links:
+        #    - mariadb:db
 
-  letsencrypt:
-    container_name: letsencrypt
-    image: linuxserver/swag
+  swag:
+    container_name: swag
+    image: lscr.io/linuxserver/swag:latest
     restart: unless-stopped
     env_file:
       - .env/.env
@@ -37,9 +37,12 @@ services:
     cap_add:
       - NET_ADMIN
     volumes:
-      - ../volumes/letsencrypt:/config
+      - ../volumes/swag:/config
+      - ../volumes/minecraft/minecraft-bedrock-converted/bluemap/web:/tmp/bluemap/play
+        # - ../volumes/minecraft/minecraft-bedrock-converted/bluemap/web:/tmp/bluemap/play2
         #- ../volumes/minecraft/minecraft-prim/bluemap/web:/tmp/bluemap/play
-        #- ../volumes/minecraft/minecraft-bedrock-converted/bluemap/web:/tmp/bluemap/play2
+    environment:
+      - DOCKER_MODS=linuxserver/mods:swag-cloudflare-real-ip
     ports:
       - 80:80
       - 443:443
@@ -69,3 +72,4 @@ services:
     volumes:
       - '../volumes/dealbot/junction:/app/junction'
       - '../volumes/dealbot/db:/app/db'
+
