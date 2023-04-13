@@ -14,7 +14,6 @@ services:
     environment:
       - RCLONE_SYNC_LABEL=GDrive_nerdfoundry
     volumes:
-      - ../volumes/rclone:/config # needs to stay a directory
       - ../../cloud-sync/GDrive_nerdfoundry:/data
 
   sync_gdrive_tg:

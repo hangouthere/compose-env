@@ -38,7 +38,8 @@ services:
       - NET_ADMIN
     volumes:
       - ../volumes/swag:/config
-      - ../volumes/minecraft/minecraft-bedrock-converted/bluemap/web:/tmp/bluemap/play
+      - /home/nfg/StoreActive/cloud-sync/GDrive_nerdfoundry/HangoutHereGFX/Overlay:/config/www/obs-overlays.home/
+        # - ../volumes/minecraft/minecraft-bedrock-converted/bluemap/web:/tmp/bluemap/play
         # - ../volumes/minecraft/minecraft-bedrock-converted/bluemap/web:/tmp/bluemap/play2
         #- ../volumes/minecraft/minecraft-prim/bluemap/web:/tmp/bluemap/play
     environment:
