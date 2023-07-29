@@ -19,7 +19,7 @@ services:
 
   home-assistant:
     container_name: home-assistant
-    image: homeassistant/home-assistant:stable
+    image: ghcr.io/home-assistant/home-assistant:stable
     restart: unless-stopped
     env_file:
       - .env/.env
