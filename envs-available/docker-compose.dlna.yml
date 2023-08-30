@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+  minidlna:
+    image: geekduck/minidlna
+    container_name: minidlna
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - /media/nfg/StoreInactive/Media/:/opt/Videos
+      - /media/nfg/StoreInactive/Media/:/opt/Pictures
+      - /media/nfg/StoreInactive/Media/:/opt/Music
+      - ../volumes/minidlna/minidlna.conf:/etc/minidlna.conf
+      - minidlna_cache:/var/cache/minidlna
+
+volumes:
+  minidlna_cache:
