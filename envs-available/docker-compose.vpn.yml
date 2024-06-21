@@ -1,0 +1,21 @@
+version: '3.5'
+
+services:
+  wireguard-vpn:
+    image: lscr.io/linuxserver/wireguard:latest
+    container_name: wireguard-vpn
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    env_file:
+      - .env/.env
+      - .env/.env-wireguard-vpn
+    environment:
+      - PERSISTENTKEEPALIVE_PEERS=all
+      - LOG_CONFS=true
+    volumes:
+      - ../volumes/wireguard-vpn/config:/config
+    ports:
+      - "51820:51820/udp"
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1

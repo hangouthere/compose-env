@@ -59,6 +59,16 @@ services:
     volumes:
       - ../volumes/vaultwarden:/data
 
+  jdownloader:
+    container_name: jdownloader
+    image: jlesage/jdownloader-2
+    restart: unless-stopped
+      #ports:
+      #  - 5800:5800
+    volumes:
+      - ../volumes/jdownloader:/config
+      - /media/nfg/StoreInactive/Media:/output/Media
+
   dealbot:
     container_name: dealbot
     image: nerdfoundry/dealbot:latest

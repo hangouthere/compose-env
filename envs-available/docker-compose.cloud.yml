@@ -33,7 +33,7 @@ services:
       - RCLONE_SYNC_LABEL=GDrive_jm
     volumes:
       - ../volumes/rclone:/config # needs to stay a directory
-      - ../../cloud-sync/GDrive_jg:/data
+      - ../../cloud-sync/GDrive_jm:/data
 
   sync_gdrive_ar:
     <<: *rclone-bisync

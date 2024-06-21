@@ -4,7 +4,7 @@ services:
   db-backup-mariadb:
     container_name: db-backup-mariadb
     image: tiredofit/db-backup
-    restart: always
+    restart: unless-stopped
     external_links:
       - mariadb
     env_file:
@@ -13,4 +13,3 @@ services:
     volumes:
       - ../volumes/__BACKUPS/mariadb/:/backup
       - ../volumes/__BACKUPS/post-script.sh:/assets/custom-scripts/post-script.sh
-

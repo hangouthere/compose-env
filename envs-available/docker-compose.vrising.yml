@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+  vrising:
+    image: scottyhardy/docker-wine
+    container_name: vrising
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    working_dir: /vrising
+    hostname: ${HOST}
+    command: /vrising/start_server.sh
+    environment:
+      - USER_UID=1000
+      - USE_XVFB=yes
+      - FORCED_OWNERSHIP=yes
+      - DISPLAY=:95
+      - XVFB_SERVER=:95
+      - XVFB_SCREEN=0
+      - XVFB_RESOLUTION=320x240x8
+    ports:
+      - '9876:9876/udp'
+      - '9877:9877/udp'
+      - '47584:47584/udp'
+      - '47584:47584/tcp'
+    volumes:
+      - ../volumes/wine:/home/wineuser/
+      - ../volumes/vrising:/vrising
+      - ${HOME}/.Xauthority:/root/.Xauthority
