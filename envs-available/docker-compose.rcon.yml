@@ -13,3 +13,9 @@ services:
       - '4327:4327'
     volumes:
       - '../volumes/rcon:/opt/rcon-web-admin/db'
+    networks:
+      - rcon_vlan
+
+networks:
+  rcon_vlan:
+    name: rcon_vlan
