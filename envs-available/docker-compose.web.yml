@@ -36,6 +36,9 @@ services:
       - .env/.env-web
     cap_add:
       - NET_ADMIN
+    networks:
+      - default
+      - gateway_access
     volumes:
       - ../volumes/swag:/config
       - /home/nfg/StoreActive/cloud-sync/GDrive_nerdfoundry/HangoutHereGFX/Overlay:/config/www/obs-overlays.home/hh
@@ -85,3 +88,6 @@ services:
       - '../volumes/dealbot/junction:/app/junction'
       - '../volumes/dealbot/db:/app/db'
 
+networks:
+  gateway_access:
+    name: gateway_access

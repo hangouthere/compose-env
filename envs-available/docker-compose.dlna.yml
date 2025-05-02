@@ -7,9 +7,11 @@ services:
     restart: unless-stopped
     network_mode: host
     volumes:
-      - /media/nfg/StoreInactive/Media/:/opt/Videos
-      - /media/nfg/StoreInactive/Media/:/opt/Pictures
-      - /media/nfg/StoreInactive/Media/:/opt/Music
+      - /media/nfg/StoreInactive/Media/Video/Movies:/opt/Videos/Movies
+      - /media/nfg/StoreInactive/Media/Video/TV Shows:/opt/Videos/TV
+      - /media/nfg/StoreInactive/Media/Music:/opt/Music
+      - /media/nfg/StoreInactive/Media/Video/_Pr0n:/opt/Videos/!Porn
+        # - /media/nfg/StoreInactive/Media/:/opt/Pictures
       - ../volumes/minidlna/minidlna.conf:/etc/minidlna.conf
       - minidlna_cache:/var/cache/minidlna
 
