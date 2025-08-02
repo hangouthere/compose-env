@@ -1,5 +1,3 @@
-version: '3.5'
-
 services:
   zwavejs2mqtt:
     container_name: zwavejs2mqtt
@@ -15,7 +13,10 @@ services:
     volumes:
       - ../volumes/zwave-config:/usr/src/app/store
     ports:
-      - '8091:8091' # port for web interface
+      - "8091:8091" # port for web interface
+    networks:
+      - default
+      - gateway_access
 
   home-assistant:
     container_name: home-assistant
@@ -25,11 +26,14 @@ services:
       - .env/.env
       - .env/.env-home-automation
     ports:
-      - '8123:8123'
+      - "8123:8123"
     volumes:
       - ../volumes/ha:/config
     devices:
       - /dev/serial/by-id/usb-0658_0200-if00:/zwaveusbstick
+    networks:
+      - default
+      - gateway_access
 
   motioneye:
     container_name: motioneye
@@ -39,8 +43,16 @@ services:
       - .env/.env
       - .env/.env-home-automation
     ports:
-      - '8766:8081'
-      - '8765:8765'
+      - "8766:8081"
+      - "8765:8765"
     volumes:
       - ../volumes/motioneye/etc:/etc/motioneye
       - ../volumes/motioneye/var_lib:/var/lib/motioneye
+    networks:
+      - default
+      - gateway_access
+
+networks:
+  gateway_access:
+    name: gateway_access
+    external: true
