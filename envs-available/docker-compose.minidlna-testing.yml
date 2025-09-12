@@ -1,0 +1,13 @@
+services:
+  minidlna-testing:
+    image: geekduck/minidlna
+    container_name: minidlna-testing
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - /media/nfg/StoreInactive/Media/Video/!AP:/opt/Videos/
+      - ../volumes/minidlna/minidlna-testing.conf:/etc/minidlna.conf
+      - minidlna_cache-testing:/var/cache/minidlna
+
+volumes:
+  minidlna_cache-testing:

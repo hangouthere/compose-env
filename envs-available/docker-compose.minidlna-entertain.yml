@@ -1,0 +1,16 @@
+services:
+  minidlna-entertain:
+    image: geekduck/minidlna
+    container_name: minidlna-entertain
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - /media/nfg/StoreInactive/Media/Video/Movies:/opt/Videos/Movies
+      - /media/nfg/StoreInactive/Media/Video/TV Shows:/opt/Videos/TV
+      - /media/nfg/StoreInactive/Media/Music:/opt/Music
+      - ../volumes/minidlna/minidlna-entertain.conf:/etc/minidlna.conf
+      - minidlna_cache-entertain:/var/cache/minidlna
+      # - /media/nfg/StoreInactive/Media/:/opt/Pictures
+
+volumes:
+  minidlna_cache-entertain:
